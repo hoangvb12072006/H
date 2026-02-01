@@ -1,57 +1,31 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Code Traitym 1 - Authentic</title>
+    <title>Traitym 1 Thick Border</title>
     <style>
-        body {
-            margin: 0;
-            background-color: #000;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        canvas {
-            position: absolute;
-        }
-        .text-overlay {
-            position: absolute;
-            color: #ff5ca4;
-            font-family: 'Arial', sans-serif;
-            font-size: 22px;
-            font-style: italic;
-            text-shadow: 0 0 15px #ff5ca4;
-            pointer-events: none;
-            z-index: 10;
-        }
+        body { margin: 0; background: #000; overflow: hidden; }
+        canvas { position: absolute; width: 100%; height: 100%; }
     </style>
 </head>
-
-    </body>
+<body>
+    <canvas id="pinkboard"></canvas>
     <script>
         /*
-         * Cấu hình hạt (Settings)
+         * Cấu hình để viền đậm và dày như mẫu Traitym 1
          */
         var settings = {
             particles: {
-                length:   800,   // Số lượng hạt (tạo độ dày)
-                duration:  2.5,   // Thời gian tồn tại (giây)
-                velocity:  80,    // Vận tốc bay ra
-                effect:   -0.75, // Độ co giãn
-                size:      3,     // Kích thước hạt
+                length:   2500, // Tăng số lượng hạt lên rất cao để viền cực đậm
+                duration:  2,   // Thời gian hạt tồn tại
+                velocity:  120, // Độ tỏa của bụi hồng
+                effect:   -1.2, // Độ co giãn tạo độ dày cho viền
+                size:      2.5, // Kích thước hạt nhỏ li ti tạo độ mịn
             },
         };
 
-        /*
-         * RequestAnimationFrame Polyfill
-         */
         (function(){var b=0;var c=["ms","moz","webkit","o"];for(var a=0;a<c.length&&!window.requestAnimationFrame;++a){window.requestAnimationFrame=window[c[a]+"RequestAnimationFrame"];window.cancelAnimationFrame=window[c[a]+"CancelAnimationFrame"]||window[c[a]+"CancelRequestAnimationFrame"]}if(!window.requestAnimationFrame){window.requestAnimationFrame=function(h,e){var d=new Date().getTime();var f=Math.max(0,16-(d-b));var g=window.setTimeout(function(){h(d+f)},f);b=d+f;return g}}if(!window.cancelAnimationFrame){window.cancelAnimationFrame=function(d){clearTimeout(d)}}}());
 
-        /*
-         * Point class (Xử lý tọa độ)
-         */
         var Point = (function() {
             function Point(x, y) { this.x = (typeof x !== 'undefined') ? x : 0; this.y = (typeof y !== 'undefined') ? y : 0; }
             Point.prototype.clone = function() { return new Point(this.x, this.y); };
@@ -60,9 +34,6 @@
             return Point;
         })();
 
-        /*
-         * Particle class (Hạt bụi trái tim)
-         */
         var Particle = (function() {
             function Particle() {
                 this.position = new Point();
@@ -93,9 +64,6 @@
             return Particle;
         })();
 
-        /*
-         * ParticlePool (Quản lý bộ nhớ hạt)
-         */
         var ParticlePool = (function() {
             var particles, firstActive = 0, firstFree = 0, duration = settings.particles.duration;
             function ParticlePool(length) {
@@ -135,9 +103,6 @@
             return ParticlePool;
         })();
 
-        /*
-         * Khởi chạy ứng dụng
-         */
         (function(canvas) {
             var context = canvas.getContext('2d'),
                 particles = new ParticlePool(settings.particles.length),
@@ -156,19 +121,7 @@
                     context = canvas.getContext('2d');
                 canvas.width  = settings.particles.size;
                 canvas.height = settings.particles.size;
-                function drawPath(context) {
-                    context.beginPath();
-                    var t = -Math.PI;
-                    var point = pointOnHeart(t);
-                    context.moveTo(point.x, point.y);
-                    while (t < Math.PI) {
-                        t += 0.01;
-                        point = pointOnHeart(t);
-                        context.lineTo(point.x, point.y);
-                    }
-                    context.closePath();
-                }
-                context.fillStyle = '#ff5ca4';
+                context.fillStyle = '#ff5ca4'; // Màu hồng rực rỡ chuẩn mẫu
                 context.beginPath();
                 context.arc(settings.particles.size/2, settings.particles.size/2, settings.particles.size/2, 0, Math.PI * 2);
                 context.fill();
@@ -182,16 +135,13 @@
                 var newTime = new Date().getTime() / 1000,
                     deltaTime = newTime - (time || newTime);
                 time = newTime;
-
                 context.clearRect(0, 0, canvas.width, canvas.height);
-
                 var amount = particleRate * deltaTime;
                 for (var i = 0; i < amount; i++) {
                     var pos = pointOnHeart(Math.random() * 2 * Math.PI);
                     var dir = pos.clone().length(settings.particles.velocity);
                     particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
                 }
-
                 particles.update(deltaTime);
                 particles.draw(context, image);
             }
@@ -201,11 +151,7 @@
                 canvas.height = window.innerHeight;
             }
             window.onresize = onResize;
-
-            setTimeout(function() {
-                onResize();
-                render();
-            }, 10);
+            setTimeout(function() { onResize(); render(); }, 10);
         })(document.getElementById('pinkboard'));
     </script>
 </body>
