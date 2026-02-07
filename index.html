@@ -3,204 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chúc Mừng Sinh Nhật - Ju Jing Yi Style</title>
+    <title>Happy Birthday Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Pacifico&display=swap');
+        :root {
+            --bg-cream: #fffdf5;
+            --primary-gold: #f1c40f;
+            --text-color: #5d4037;
+            --btn-color: #ffca28;
+        }
 
         body {
-            margin: 0;
-            padding: 0;
-            background: #fdf2f2; /* Màu nền trắng hồng nhạt */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
+            margin: 0; padding: 0; overflow: hidden;
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-cream);
+            height: 100vh; width: 100vw;
         }
 
-        /* --- PHẦN 1: NÚT MỞ THƯ --- */
-        #envelope-wrapper {
-            text-align: center;
-            cursor: pointer;
-            z-index: 100;
+        /* --- CÁC MÀN HÌNH --- */
+        .screen {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none; /* Mặc định ẩn */
+            flex-direction: column;
+            justify-content: center; align-items: center;
+            transition: opacity 0.5s;
         }
+        .active { display: flex; }
 
-        .gift-box-icon {
-            font-size: 80px;
-            animation: bounce 2s infinite;
+        /* --- MÀN 1: HỘP QUÀ --- */
+        .gift-container { text-align: center; cursor: pointer; }
+        .gift-icon {
+            font-size: 100px;
+            animation: shake 1s infinite cubic-bezier(.36,.07,.19,.97) both;
+            display: inline-block;
         }
-
-        .btn-open {
-            background: #f39c12;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            font-family: 'Pacifico', cursive;
-        }
-
-        /* --- PHẦN 2: GIAO DIỆN THIỆP CHÍNH --- */
-        #main-card {
-            display: none;
-            position: relative;
-            width: 900px;
-            height: 500px;
-            background: white;
-            border: 15px solid;
-            border-image: linear-gradient(45deg, #d4af37, #f7e08b, #d4af37) 1; /* Viền vàng gold */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            padding: 20px;
-            box-sizing: border-box;
-            background-image: radial-gradient(circle, #fff 70%, #fff9e6 100%);
-        }
-
-        .content-container {
-            display: flex;
-            height: 100%;
-            align-items: center;
-            justify-content: space-around;
-        }
-
-        /* Lời chúc */
-        .text-section {
-            width: 55%;
-            padding: 20px;
+        .gift-text {
             font-family: 'Dancing Script', cursive;
-            font-size: 22px;
-            color: #444;
-            line-height: 1.6;
-            white-space: pre-wrap;
+            font-size: 2rem; color: #e57373; margin-top: 10px;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0) rotate(-5deg); }
+            20%, 80% { transform: translate3d(2px, 0, 0) rotate(5deg); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0) rotate(-5deg); }
+            40%, 60% { transform: translate3d(4px, 0, 0) rotate(5deg); }
         }
 
-        /* Ảnh chính */
-        .image-section {
-            width: 35%;
-            text-align: center;
+        /* --- MÀN 2: HAPPY BIRTHDAY --- */
+        #screen2 {
+            background-image: 
+                linear-gradient(rgba(255, 235, 59, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 235, 59, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px; /* Hiệu ứng lưới mờ phía sau */
         }
-
-        .main-img-circle {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            border: 8px solid #f7e08b;
-            object-fit: cover;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        
+        .hpbd-text {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3.5rem; color: #ffeb3b;
+            text-shadow: 4px 4px 0px #3e2723;
+            position: relative; margin-bottom: 20px; text-align: center;
         }
+        .hat-icon {
+            position: absolute; top: -30px; right: -10px; width: 50px;
+            transform: rotate(15deg);
+        }
+        
+        /* Khung ảnh tròn chuyển động */
+        .circle-frame {
+            width: 200px; height: 200px; border-radius: 50%;
+            border: 5px solid #3e2723; overflow: hidden;
+            position: relative; margin: 20px 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .circle-frame img {
+            width: 100%; height: 100%; object-fit: cover;
+            position: absolute; top: 0; left: 0;
+            opacity: 0; transition: opacity 1s ease-in-out;
+        }
+        .circle-frame img.show { opacity: 1; }
 
         .name-tag {
-            font-family: 'Pacifico', cursive;
-            font-size: 30px;
-            margin-top: 15px;
-            color: #333;
+            background: #ffca28; padding: 10px 30px;
+            border-radius: 30px; border: 3px solid #3e2723;
+            font-weight: bold; font-size: 1.2rem; color: #3e2723;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0px #3e2723;
         }
 
-        /* --- HIỆU ỨNG ẢNH BAY & TUYẾT --- */
-        .falling-item {
-            position: absolute;
-            pointer-events: none;
-            z-index: 10;
+        /* Nút mở thư */
+        .btn {
+            background: #ffca28; border: 3px solid #3e2723;
+            padding: 10px 40px; border-radius: 50px;
+            font-weight: bold; font-size: 1.2rem; cursor: pointer;
+            box-shadow: 4px 4px 0px #3e2723;
+            transition: transform 0.1s;
+        }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #3e2723; }
+
+        /* Hiệu ứng hoa rơi (Sakura) */
+        .petal {
+            position: absolute; background: #ffcdd2;
+            width: 15px; height: 15px; border-radius: 15px 0 15px 0;
+            animation: fall linear forwards; opacity: 0.8; z-index: 0;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
         }
 
-        .photo-fly {
-            width: 80px;
-            height: 80px;
-            border: 3px solid white;
-            border-radius: 5px;
-            object-fit: cover;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            animation: drift linear infinite;
+        /* --- MÀN 3: THIỆP & LỜI CHÚC --- */
+        #screen3 { background: rgba(0,0,0,0.85); } /* Nền tối để nổi thiệp */
+
+        .card {
+            width: 90%; max-width: 350px;
+            background: #fff;
+            padding: 20px;
+            position: relative;
+            /* Tạo viền kẻ sọc vàng trắng */
+            border: 15px solid #ffca28;
+            border-image: repeating-linear-gradient(45deg, #ffca28, #ffca28 10px, #fff 10px, #fff 20px) 20;
+            box-shadow: 0 0 50px rgba(255,215,0,0.5);
+        }
+        
+        .card h2 {
+            text-align: center; font-family: 'Dancing Script', cursive;
+            color: #d84315; font-size: 2.5rem; margin: 0 0 10px 0;
+        }
+        
+        #typewriter {
+            font-family: 'Dancing Script', cursive; font-size: 1.4rem;
+            line-height: 1.5; color: #4e342e; min-height: 250px;
+            white-space: pre-wrap; /* Giữ định dạng xuống dòng */
         }
 
-        @keyframes drift {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        #start-btn { margin-top: 15px; width: 100%; display: none; }
+        
+        .sticker-bear {
+            position: absolute; bottom: 5px; right: 5px; width: 60px;
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
+        /* --- MÀN 4: ẢNH BAY (Floating Photos) --- */
+        #screen4 { background: #1a1a1a; overflow: hidden; }
+        
+        .photo-column {
+            display: flex; flex-direction: column;
+            position: absolute; bottom: -1000px; /* Bắt đầu từ dưới màn hình */
         }
+        
+        .float-img {
+            width: 150px; border: 5px solid #fff;
+            margin-bottom: 30px;
+            transform: rotate(var(--r));
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(100vh); }
+            to { transform: translateY(-300vh); } /* Chạy tuốt lên trên */
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="envelope-wrapper" onclick="startBrithday()">
-        <div class="gift-box-icon">🎁</div>
-        <button class="btn-open">Mở thư</button>
-    </div>
-
-    <div id="main-card">
-        <div class="content-container">
-            <div class="text-section" id="typing-text"></div>
-            
-            <div class="image-section">
-                <img src="https://i.pinimg.com/736x/8e/3c/69/8e3c6902263435e2376916c59b20b224.jpg" class="main-img-circle" alt="Ju Jing Yi">
-                <div class="name-tag">Ju Jing Yi</div>
-            </div>
+    <div id="screen1" class="screen active" onclick="goToScreen2()">
+        <div class="gift-container">
+            <div class="gift-icon">🎁</div>
+            <div class="gift-text">Nhấn để mở món quà</div>
         </div>
     </div>
 
+    <div id="screen2" class="screen">
+        <div class="hpbd-text" id="hpbd-text">
+            HAPPY BIRTHDAY
+            <img src="https://cdn-icons-png.flaticon.com/512/864/864837.png" class="hat-icon">
+        </div>
+        
+        <div class="circle-frame" id="slider-frame">
+            <img src="https://i.pinimg.com/564x/b8/00/f8/b800f89552973956ec944f23cb82103f.jpg" class="show">
+            <img src="https://i.pinimg.com/564x/4d/8e/5e/4d8e5e7836696b865538356942442436.jpg">
+            <img src="https://i.pinimg.com/564x/93/29/77/93297746592237d15904099587424683.jpg">
+        </div>
+
+        <div class="name-tag">Người Thương ❤️</div>
+        
+        <button class="btn" onclick="goToScreen3()">Mở thư 💌</button>
+    </div>
+
+    <div id="screen3" class="screen">
+        <div class="card">
+            <h2>Thân gửi...</h2>
+            <div id="typewriter"></div>
+            <img src="https://cdn-icons-png.flaticon.com/512/4741/4741006.png" class="sticker-bear">
+            <button id="start-btn" class="btn" onclick="goToScreen4()">START ✨</button>
+        </div>
+    </div>
+
+    <div id="screen4" class="screen">
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <script>
-        const message = `Thân gửi Ju Jing Yi,\n\nNhân ngày đặc biệt này, chúc bạn luôn có thật nhiều sức khỏe, may mắn và hạnh phúc. Mong rằng tuổi mới sẽ mang đến cho bạn những trải nghiệm thật ý nghĩa bên những người thân yêu.\n\nBạn và những người yêu thương.`;
-
-        // Danh sách ảnh bay xung quanh (Hãy thay link ảnh của bạn)
-        const photoList = [
-            "https://i.pinimg.com/564x/93/2a/3b/932a3b0f7992982d61d1e43477e74288.jpg",
-            "https://i.pinimg.com/564x/92/7e/1a/927e1a90c1737e3d81997368d0092c6c.jpg",
-            "https://i.pinimg.com/564x/82/81/29/8281295966379564177d70459740e539.jpg"
-        ];
-
-        function startBrithday() {
-            document.getElementById('envelope-wrapper').style.display = 'none';
-            const card = document.getElementById('main-card');
-            card.style.display = 'block';
-
-            // Hiệu ứng đánh máy
-            let i = 0;
-            const speed = 50; 
-            function typeWriter() {
-                if (i < message.length) {
-                    document.getElementById("typing-text").innerHTML += message.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, speed);
-                } else {
-                    // Sau khi gõ xong thì ảnh và tuyết bắt đầu rơi
-                    startFalling();
-                }
-            }
-            typeWriter();
+        // --- CHUYỂN CẢNH ---
+        function switchScreen(hideId, showId) {
+            document.getElementById(hideId).classList.remove('active');
+            const showScreen = document.getElementById(showId);
+            showScreen.classList.add('active');
+            return showScreen;
         }
 
-        function startFalling() {
-            // Tạo ảnh bay
-            setInterval(() => {
-                const img = document.createElement('img');
-                img.src = photoList[Math.floor(Math.random() * photoList.length)];
-                img.className = 'falling-item photo-fly';
-                img.style.left = Math.random() * 100 + 'vw';
-                img.style.animationDuration = (Math.random() * 3 + 4) + 's';
-                document.body.appendChild(img);
-                setTimeout(() => img.remove(), 7000);
-            }, 1500);
+        // --- MÀN 1 -> MÀN 2 ---
+        function goToScreen2() {
+            switchScreen('screen1', 'screen2');
+            startSlider();
+            createPetals(); // Tạo hoa rơi
+        }
 
-            // Tạo hiệu ứng tuyết/lá nhỏ
+        // Slider ảnh xoay vòng
+        function startSlider() {
+            const imgs = document.querySelectorAll('#slider-frame img');
+            let index = 0;
             setInterval(() => {
-                const leaf = document.createElement('div');
-                leaf.className = 'falling-item';
-                leaf.innerHTML = '🌸'; // Có thể thay bằng ❄ hoặc ✨
-                leaf.style.left = Math.random() * 100 + 'vw';
-                leaf.style.fontSize = Math.random() * 15 + 10 + 'px';
-                leaf.style.animation = `drift ${Math.random() * 2 + 3}s linear infinite`;
-                document.body.appendChild(leaf);
-                setTimeout(() => leaf.remove(), 5000);
+                imgs[index].classList.remove('show');
+                index = (index + 1) % imgs.length;
+                imgs[index].classList.add('show');
+            }, 2000); // 2 giây đổi ảnh 1 lần
+        }
+
+        // Tạo hiệu ứng hoa rơi
+        function createPetals() {
+            setInterval(() => {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.animationDuration = Math.random() * 3 + 3 + 's';
+                document.getElementById('screen2').appendChild(petal);
+                setTimeout(() => petal.remove(), 6000);
             }, 300);
+        }
+
+        // --- MÀN 2 -> MÀN 3 ---
+        const message = "Nhân ngày đặc biệt này, chúc bạn luôn xinh đẹp, hạnh phúc và thành công. Mong rằng tuổi mới sẽ mang đến cho bạn thật nhiều niềm vui và những kỷ niệm đáng nhớ bên cạnh những người yêu thương!";
+        
+        function goToScreen3() {
+            switchScreen('screen2', 'screen3');
+            let i = 0;
+            const speed = 50; // Tốc độ viết chữ
+            const typeWriterEl = document.getElementById("typewriter");
+            
+            function type() {
+                if (i < message.length) {
+                    typeWriterEl.innerHTML += message.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    // Viết xong hiện nút Start & Bắn pháo hoa
+                    document.getElementById('start-btn').style.display = 'block';
+                    fireworksEffect();
+                }
+            }
+            type();
+        }
+
+        function fireworksEffect() {
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffeb3b', '#ffca28']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120, spread: 55, origin: { x: 1 }, colors: ['#f44336', '#e91e63']
+                });
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // --- MÀN 3 -> MÀN 4 (ẢNH BAY) ---
+        // Danh sách ảnh để bay lên (Bạn thay link ảnh của bạn vào đây nhé)
+        const photoList = [
+            'https://i.pinimg.com/564x/b8/00/f8/b800f89552973956ec944f23cb82103f.jpg',
+            'https://i.pinimg.com/564x/4d/8e/5e/4d8e5e7836696b865538356942442436.jpg',
+            'https://i.pinimg.com/564x/93/29/77/93297746592237d15904099587424683.jpg',
+            'https://i.pinimg.com/564x/2b/38/26/2b38263592185b3769994c969399435b.jpg',
+            'https://i.pinimg.com/564x/8e/0c/3e/8e0c3e3870335e6795817c76752763f0.jpg'
+        ];
+
+        function goToScreen4() {
+            const screen4 = switchScreen('screen3', 'screen4');
+            
+            // Tạo 3 cột ảnh để bay lên
+            for(let i=0; i<3; i++) {
+                const col = document.createElement('div');
+                col.style.position = 'absolute';
+                col.style.left = (i * 33) + '%';
+                col.style.width = '33%';
+                col.style.animation = `floatUp ${10 + Math.random()*5}s linear infinite`; // Tốc độ bay ngẫu nhiên
+                
+                // Thêm ảnh vào cột
+                // Lặp lại list ảnh 2 lần để tạo cảm giác nhiều
+                [...photoList, ...photoList].forEach(src => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.className = 'float-img';
+                    img.style.setProperty('--r', (Math.random()*20 - 10) + 'deg'); // Xoay nghiêng ngẫu nhiên
+                    col.appendChild(img);
+                });
+                screen4.appendChild(col);
+            }
         }
     </script>
 </body>
