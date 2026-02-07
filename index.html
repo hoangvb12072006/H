@@ -130,18 +130,21 @@
         .circle-frame img.show { opacity: 1; }
 
         /* Thẻ tên (Màu vàng viền đen) */
-        .name-tag {
+       .name-tag {
             background: #ffca28; 
-            padding: 8px 40px;
-            border-radius: 50px; 
-            border: 3px solid var(--stroke-color);
-            font-family: 'Nunito', sans-serif;
-            font-weight: 800; font-size: 1.2rem; color: var(--stroke-color);
-            margin-bottom: 20px;
-            position: relative; top: -20px; /* Đẩy lên đè vào khung ảnh xíu cho đẹp */
-            z-index: 3;
+            padding: 10px 40px; /* Cho dài ra xíu giống ảnh */
+            border-radius: 30px; 
+            border: 3px solid #3e2723; /* Nhớ đổi màu viền nếu bạn đang dùng style truyện tranh */
+            font-weight: bold; font-size: 1.2rem; color: #3e2723;
+            box-shadow: 4px 4px 0px #3e2723;
+            
+            /* --- CÁC DÒNG QUAN TRỌNG ĐỂ ĐÈ LÊN --- */
+            position: relative; /* Để z-index hoạt động */
+            z-index: 10; /* Số lớn để đảm bảo nó nằm trên cùng */
+            margin-top: -35px; /* Kéo ngược lên trên 35px để đè vào ảnh */
+            margin-bottom: 25px; /* Đẩy nút bên dưới ra xa một chút */
         }
-
+        
         /* Nút Mở thư */
         .btn {
             background: #ffca28; border: 3px solid var(--stroke-color);
