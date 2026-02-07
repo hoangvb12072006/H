@@ -9,8 +9,7 @@
         :root {
             --bg-cream: #fffdf5;
             --primary-gold: #f1c40f;
-            --text-color: #5d4037;
-            --btn-color: #ffca28;
+            --stroke-color: #2d2d2d; /* Màu viền đen đậm */
         }
 
         body {
@@ -27,13 +26,8 @@
             display: none; 
             flex-direction: column;
             justify-content: center; align-items: center;
-            
-            /* Hiệu ứng mờ dần */
-            opacity: 1;
-            transition: opacity 1s ease-in-out; 
+            opacity: 1; transition: opacity 1s ease-in-out; 
         }
-        
-        /* Class ẩn màn hình */
         .screen.fade-out { opacity: 0; }
         .active { display: flex; }
 
@@ -55,83 +49,108 @@
             40%, 60% { transform: translate3d(4px, 0, 0) rotate(5deg); }
         }
 
-        /* --- MÀN 2: HAPPY BIRTHDAY --- */
+        /* --- MÀN 2: STYLE GIỐNG ẢNH MẪU --- */
         #screen2 {
+            /* Nền lưới vàng nhạt giống ảnh */
             background-image: 
-                linear-gradient(rgba(255, 235, 59, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 235, 59, 0.1) 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
-        
-        /* Style cho khung chữ Happy Birthday */
-        .hpbd-text {
-            font-family: 'Fredoka One', cursive;
-            font-size: 3.5rem; color: #ffeb3b;
-            text-shadow: 4px 4px 0px #3e2723;
-            position: relative; margin-bottom: 20px; text-align: center;
-            z-index: 2;
-            min-height: 80px; /* Giữ khung để không bị giật */
+                linear-gradient(rgba(255, 202, 40, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 202, 40, 0.2) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
-        /* Style cho từng chữ cái hiện ra */
+        /* Container chứa chữ Happy Birthday */
+        .hpbd-container {
+            display: flex; flex-direction: column; align-items: center;
+            margin-bottom: 30px; z-index: 5;
+            transform: scale(1.2); /* Phóng to cho hoành tráng */
+        }
+
+        .text-line {
+            display: flex; justify-content: center;
+            margin: -5px 0; /* Thu hẹp khoảng cách 2 dòng */
+        }
+
+        /* Style chung cho chữ cái */
         .letter {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3.5rem;
             display: inline-block;
             opacity: 0;
             transform: translateY(20px) scale(0.5);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            margin: 0 2px;
+            margin: 0 1px;
             position: relative;
+            
+            /* Tạo viền đen dày như truyện tranh */
+            -webkit-text-stroke: 1.5px var(--stroke-color);
+            text-shadow: 3px 3px 0px var(--stroke-color);
         }
         .letter.pop { opacity: 1; transform: translateY(0) scale(1); }
 
-        /* Style cho cái mũ rơi xuống */
+        /* Style riêng: HAPPY (Màu trắng) */
+        .letter.white { color: #ffffff; }
+        
+        /* Style riêng: BIRTHDAY (Màu vàng) */
+        .letter.yellow { color: #ffca28; }
+
+        /* Mũ sinh nhật (Đội ở chữ Happy) */
         .hat-icon {
             position: absolute;
-            width: 45px;
-            top: -100px; /* Bắt đầu từ trên cao */
-            left: 50%;
-            transform: translateX(-50%) rotate(15deg);
+            width: 40px;
+            top: -60px; right: -15px; /* Chỉnh vị trí mũ nằm trên góc phải */
+            transform: rotate(20deg);
             opacity: 0;
-            transition: all 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045); /* Hiệu ứng rơi tự do */
+            transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045);
             z-index: 10;
         }
-        .hat-icon.drop { opacity: 1; top: -45px; /* Vị trí đậu trên chữ */ }
-        
+        .hat-icon.drop { opacity: 1; top: -35px; }
+
         /* Khung ảnh tròn */
         .circle-frame {
-            width: 200px; height: 200px; border-radius: 50%;
-            border: 5px solid #3e2723; overflow: hidden;
-            position: relative; margin: 20px 0;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            background: #fff;
-            z-index: 2;
+            width: 220px; height: 220px; border-radius: 50%;
+            border: 6px solid var(--stroke-color); /* Viền đen đậm */
+            overflow: hidden;
+            position: relative; margin: 10px 0 25px 0;
+            background: #fff; z-index: 2;
         }
         .circle-frame img {
             width: 100%; height: 100%; object-fit: cover;
             position: absolute; top: 0; left: 0;
-            opacity: 0; transition: opacity 1s ease-in-out;
+            opacity: 0; transition: opacity 1s;
         }
         .circle-frame img.show { opacity: 1; }
 
+        /* Thẻ tên (Màu vàng viền đen) */
         .name-tag {
-            background: #ffca28; padding: 10px 30px;
-            border-radius: 30px; border: 3px solid #3e2723;
-            font-weight: bold; font-size: 1.2rem; color: #3e2723;
+            background: #ffca28; 
+            padding: 8px 40px;
+            border-radius: 50px; 
+            border: 3px solid var(--stroke-color);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800; font-size: 1.2rem; color: var(--stroke-color);
             margin-bottom: 20px;
-            box-shadow: 4px 4px 0px #3e2723;
-            z-index: 2;
+            position: relative; top: -20px; /* Đẩy lên đè vào khung ảnh xíu cho đẹp */
+            z-index: 3;
         }
 
-        /* Nút chung */
+        /* Nút Mở thư */
         .btn {
-            background: #ffca28; border: 3px solid #3e2723;
-            padding: 10px 40px; border-radius: 50px;
-            font-weight: bold; font-size: 1.2rem; cursor: pointer;
-            box-shadow: 4px 4px 0px #3e2723;
+            background: #ffca28; border: 3px solid var(--stroke-color);
+            padding: 12px 50px; border-radius: 50px;
+            font-weight: 800; font-size: 1.3rem; color: var(--stroke-color);
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--stroke-color);
             transition: transform 0.1s;
-            z-index: 10;
+            z-index: 10; font-family: 'Nunito', sans-serif;
         }
-        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #3e2723; }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--stroke-color); }
+
+        /* Các ngôi sao trang trí (Style truyện tranh) */
+        .star-decor {
+            position: absolute; color: var(--stroke-color);
+            font-size: 20px; animation: twinkle 2s infinite;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 1; scale: 1; } 50% { opacity: 0.5; scale: 0.8; } }
 
         /* Hiệu ứng hoa rơi */
         .petal {
@@ -139,76 +158,38 @@
             width: 15px; height: 15px; border-radius: 15px 0 15px 0;
             animation: fall linear forwards; opacity: 0.8; z-index: 1;
         }
-        @keyframes fall {
-            to { transform: translateY(100vh) rotate(720deg); }
-        }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
 
-        /* --- MÀN 3: THIỆP & LỜI CHÚC --- */
+        /* --- MÀN 3: THIỆP --- */
         #screen3 { background: rgba(0,0,0,0.85); }
-
         .card {
-            width: 85%; max-width: 350px;
-            background: #fff; padding: 20px;
+            width: 85%; max-width: 350px; background: #fff; padding: 20px;
             position: relative;
             border: 15px solid #ffca28;
             border-image: repeating-linear-gradient(45deg, #ffca28, #ffca28 10px, #fff 10px, #fff 20px) 20;
             box-shadow: 0 0 50px rgba(255,215,0,0.5);
             display: flex; flex-direction: column; align-items: center;
         }
-        
-        .card h2 {
-            text-align: center; font-family: 'Dancing Script', cursive;
-            color: #d84315; font-size: 2.2rem; margin: 0 0 10px 0;
-        }
-        
-        /* Phần nội dung thư có thanh cuộn */
+        .card h2 { text-align: center; font-family: 'Dancing Script', cursive; color: #d84315; font-size: 2.2rem; margin: 0; }
         #typewriter {
             font-family: 'Dancing Script', cursive; font-size: 1.3rem;
-            line-height: 1.5; color: #4e342e;
-            width: 100%;
-            min-height: 150px; max-height: 50vh; /* Giới hạn chiều cao */
-            overflow-y: auto; /* Thêm thanh cuộn */
-            white-space: pre-wrap;
-            text-align: left;
-            padding-right: 5px;
+            line-height: 1.5; color: #4e342e; width: 100%;
+            min-height: 150px; max-height: 50vh; overflow-y: auto;
+            white-space: pre-wrap; padding-right: 5px;
         }
-        /* Style thanh cuộn */
         #typewriter::-webkit-scrollbar { width: 5px; }
         #typewriter::-webkit-scrollbar-thumb { background: #ffca28; border-radius: 10px; }
-
         #start-btn { margin-top: 15px; width: 100%; display: none; }
-        
-        .sticker-bear {
-            position: absolute; bottom: -20px; right: -20px; width: 70px;
-            transform: rotate(10deg);
-        }
+        .sticker-bear { position: absolute; bottom: -20px; right: -20px; width: 70px; transform: rotate(10deg); }
 
         /* --- MÀN 4: ẢNH BAY --- */
         #screen4 { background: #1a1a1a; overflow: hidden; }
-        
-        .photo-column {
-            display: flex; flex-direction: column;
-            position: absolute; bottom: -100%;
-        }
-        
-        .float-img {
-            width: 100%; max-width: 150px;
-            border: 4px solid #fff;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        @keyframes floatUp {
-            from { transform: translateY(0); }
-            to { transform: translateY(-200%); }
-        }
+        .photo-column { display: flex; flex-direction: column; position: absolute; bottom: -100%; }
+        .float-img { width: 100%; max-width: 150px; border: 4px solid #fff; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        @keyframes floatUp { from { transform: translateY(0); } to { transform: translateY(-200%); } }
     </style>
 </head>
 <body>
-
-    <audio id="bg-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
 
     <div id="screen1" class="screen active" onclick="goToScreen2()">
         <div class="gift-container">
@@ -218,7 +199,12 @@
     </div>
 
     <div id="screen2" class="screen">
-        <div class="hpbd-text" id="hpbd-text"></div>
+        <div class="star-decor" style="top: 10%; left: 10%;">✨</div>
+        <div class="star-decor" style="top: 20%; right: 15%; animation-delay: 0.5s;">✦</div>
+        <div class="star-decor" style="bottom: 15%; left: 20%; animation-delay: 1s;">✨</div>
+        <div class="star-decor" style="bottom: 30%; right: 10%;">✦</div>
+
+        <div class="hpbd-container" id="hpbd-container"></div>
         
         <div class="circle-frame" id="slider-frame">
             <img src="https://i.pinimg.com/564x/b8/00/f8/b800f89552973956ec944f23cb82103f.jpg" class="show">
@@ -226,8 +212,9 @@
             <img src="https://i.pinimg.com/564x/93/29/77/93297746592237d15904099587424683.jpg">
         </div>
 
-        <div class="name-tag">Người Thương ❤️</div>
-        <button class="btn" onclick="goToScreen3()">Mở thư 💌</button>
+        <div class="name-tag">❤️ Ju Jing Yi ❤️</div>
+        
+        <button class="btn" onclick="goToScreen3()">Mở thư</button>
     </div>
 
     <div id="screen3" class="screen">
@@ -244,7 +231,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        // --- CHUYỂN CẢNH ---
         function switchScreen(hideId, showId) {
             document.getElementById(hideId).classList.remove('active');
             const showScreen = document.getElementById(showId);
@@ -255,25 +241,67 @@
         // --- MÀN 1 -> MÀN 2 ---
         function goToScreen2() {
             const screen1 = document.getElementById('screen1');
-            
-            // 1. Hiệu ứng mờ dần
             screen1.classList.add('fade-out');
-
-            // 2. Đợi 1s cho mờ xong mới chuyển
             setTimeout(() => {
                 switchScreen('screen1', 'screen2');
-                
-                // Chạy hiệu ứng chữ
-                animateBirthdayText();
-                
+                animateComicText(); // Chạy hiệu ứng chữ style mới
                 startSlider();
                 createPetals();
-                
-                // Phát nhạc
-                var audio = document.getElementById("bg-music");
-                if(audio) audio.play().catch(e => console.log("Cần chạm để phát nhạc"));
-
+                // var audio = document.getElementById("bg-music");
+                // if(audio) audio.play().catch(e => console.log(e));
             }, 1000);
+        }
+
+        // --- HIỆU ỨNG CHỮ STYLE TRUYỆN TRANH ---
+        function animateComicText() {
+            const container = document.getElementById('hpbd-container');
+            container.innerHTML = ""; // Xóa cũ
+
+            // Dòng 1: HAPPY (Trắng)
+            const line1 = document.createElement('div');
+            line1.className = 'text-line';
+            const text1 = "HAPPY";
+            for(let i=0; i<text1.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'letter white'; // Class màu trắng
+                span.textContent = text1[i];
+                
+                // Gắn mũ vào chữ Y của HAPPY (index 4)
+                if(i === 4) {
+                    const hat = document.createElement('img');
+                    hat.src = "https://cdn-icons-png.flaticon.com/512/864/864837.png";
+                    hat.className = 'hat-icon';
+                    span.appendChild(hat);
+                }
+                line1.appendChild(span);
+            }
+            container.appendChild(line1);
+
+            // Dòng 2: BIRTHDAY (Vàng)
+            const line2 = document.createElement('div');
+            line2.className = 'text-line';
+            const text2 = "BIRTHDAY";
+            for(let i=0; i<text2.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'letter yellow'; // Class màu vàng
+                span.textContent = text2[i];
+                line2.appendChild(span);
+            }
+            container.appendChild(line2);
+
+            // Animation hiện chữ
+            const letters = document.querySelectorAll('.letter');
+            letters.forEach((letter, index) => {
+                setTimeout(() => {
+                    letter.classList.add('pop');
+                    // Nếu là chữ Y của HAPPY (là phần tử thứ 5, index 4) thì thả mũ
+                    if (index === 4) {
+                        setTimeout(() => {
+                            letter.querySelector('.hat-icon').classList.add('drop');
+                        }, 300);
+                    }
+                }, index * 100);
+            });
         }
 
         // Slider ảnh
@@ -287,7 +315,7 @@
             }, 2500); 
         }
 
-        // Hiệu ứng hoa rơi
+        // Hoa rơi
         function createPetals() {
             setInterval(() => {
                 const petal = document.createElement('div');
@@ -299,65 +327,19 @@
             }, 400);
         }
 
-        // --- HIỆU ỨNG CHỮ HAPPY BIRTHDAY ---
-        function animateBirthdayText() {
-            const textContainer = document.getElementById('hpbd-text');
-            const text = "HAPPY BIRTHDAY";
-            textContainer.innerHTML = ""; // Xóa sạch cũ
-
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
-                const span = document.createElement('span');
-                
-                if (char === " ") {
-                    span.innerHTML = "&nbsp;";
-                    span.style.margin = "0 10px";
-                } else {
-                    span.textContent = char;
-                    span.className = 'letter';
-                }
-
-                // Gắn mũ vào chữ cái cuối cùng (chữ Y)
-                if (i === text.length - 1) {
-                    const hat = document.createElement('img');
-                    hat.src = "https://cdn-icons-png.flaticon.com/512/864/864837.png";
-                    hat.className = 'hat-icon';
-                    span.appendChild(hat);
-                }
-                textContainer.appendChild(span);
-            }
-
-            // Hiện từng chữ
-            const letters = document.querySelectorAll('.letter');
-            letters.forEach((letter, index) => {
-                setTimeout(() => {
-                    letter.classList.add('pop');
-                    // Nếu là chữ cuối thì thả mũ
-                    if (index === letters.length - 1) {
-                        setTimeout(() => {
-                            letter.querySelector('.hat-icon').classList.add('drop');
-                        }, 300);
-                    }
-                }, index * 100);
-            });
-        }
-
         // --- MÀN 2 -> MÀN 3 ---
-        const message = "Chúc mừng sinh nhật! \n\nChúc cậu tuổi mới luôn rạng rỡ, xinh đẹp và ngập tràn hạnh phúc. Mong rằng mọi điều ước của cậu trong ngày hôm nay đều sẽ thành hiện thực. \n\nCảm ơn vì đã luôn ở bên tớ! ❤️";
-        
+        const message = "Chúc mừng sinh nhật! \n\nTuổi mới rạng rỡ, xinh đẹp và hạnh phúc nhé. \n\nCảm ơn vì đã luôn ở bên tớ! ❤️";
         function goToScreen3() {
             switchScreen('screen2', 'screen3');
             let i = 0;
-            const speed = 40; 
             const typeWriterEl = document.getElementById("typewriter");
             typeWriterEl.innerHTML = ""; 
-
             function type() {
                 if (i < message.length) {
                     typeWriterEl.innerHTML += message.charAt(i);
                     i++;
-                    typeWriterEl.scrollTop = typeWriterEl.scrollHeight; // Tự cuộn xuống
-                    setTimeout(type, speed);
+                    typeWriterEl.scrollTop = typeWriterEl.scrollHeight;
+                    setTimeout(type, 40);
                 } else {
                     document.getElementById('start-btn').style.display = 'block';
                     fireworksEffect();
@@ -367,8 +349,7 @@
         }
 
         function fireworksEffect() {
-            var duration = 3 * 1000;
-            var end = Date.now() + duration;
+            var duration = 3 * 1000; var end = Date.now() + duration;
             (function frame() {
                 confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffeb3b', '#ffca28'] });
                 confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#f44336', '#e91e63'] });
@@ -384,11 +365,9 @@
             'https://i.pinimg.com/564x/2b/38/26/2b38263592185b3769994c969399435b.jpg',
             'https://i.pinimg.com/564x/8e/0c/3e/8e0c3e3870335e6795817c76752763f0.jpg'
         ];
-
         function goToScreen4() {
             const screen4 = switchScreen('screen3', 'screen4');
             const longList = [...photoList, ...photoList, ...photoList, ...photoList];
-
             for(let i=0; i<3; i++) { 
                 const col = document.createElement('div');
                 col.className = 'photo-column';
@@ -396,11 +375,9 @@
                 col.style.width = '33%';
                 const duration = 15 + Math.random() * 10; 
                 col.style.animation = `floatUp ${duration}s linear infinite`;
-                
                 longList.forEach(src => {
                     const img = document.createElement('img');
-                    img.src = src;
-                    img.className = 'float-img';
+                    img.src = src; img.className = 'float-img';
                     img.style.setProperty('--r', (Math.random()*30 - 15) + 'deg'); 
                     col.appendChild(img);
                 });
