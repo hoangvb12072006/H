@@ -199,6 +199,64 @@
         .photo-column { display: flex; flex-direction: column; position: absolute; bottom: -100%; }
         .float-img { width: 100%; max-width: 150px; border: 4px solid #fff; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         @keyframes floatUp { from { transform: translateY(0); } to { transform: translateY(-200%); } }
+
+        // Hàm tạo chữ style truyện tranh 2 dòng VÀ KÍCH HOẠT CÁC PHẦN KHÁC
+        function animateBirthdayText() {
+            const container = document.getElementById('hpbd-text');
+            container.innerHTML = ""; // Xóa sạch cũ
+
+            // --- (Phần tạo chữ giữ nguyên) ---
+            // DÒNG 1: HAPPY
+            const line1 = document.createElement('div'); line1.className = 'text-line';
+            const text1 = "HAPPY";
+            for(let i=0; i<text1.length; i++) {
+                const span = document.createElement('span'); span.className = 'letter'; span.textContent = text1[i];
+                if(i === 4) {
+                    const hat = document.createElement('img'); hat.src = "https://cdn-icons-png.flaticon.com/512/864/864837.png"; hat.className = 'hat-icon'; span.appendChild(hat);
+                }
+                line1.appendChild(span);
+            }
+            container.appendChild(line1);
+
+            // DÒNG 2: BIRTHDAY
+            const line2 = document.createElement('div'); line2.className = 'text-line';
+            const text2 = "BIRTHDAY";
+            for(let i=0; i<text2.length; i++) {
+                const span = document.createElement('span'); span.className = 'letter yellow'; span.textContent = text2[i]; line2.appendChild(span);
+            }
+            container.appendChild(line2);
+
+            // --- ANIMATION CHẠY CHỮ ---
+            const letters = document.querySelectorAll('.letter');
+            let totalTextTime = 0; // Biến để tính tổng thời gian chạy chữ
+            letters.forEach((letter, index) => {
+                setTimeout(() => {
+                    letter.classList.add('pop');
+                    if (index === 4) { setTimeout(() => { letter.querySelector('.hat-icon').classList.add('drop'); }, 300); }
+                }, index * 100);
+                totalTextTime = index * 100; // Cập nhật thời gian của chữ cuối cùng
+            });
+
+            // --- PHẦN MỚI THÊM: KÍCH HOẠT ẢNH, THẺ TÊN, NÚT BẬT RA ---
+            // Đợi chữ chạy gần xong (khoảng 1.2s sau) thì mới bắt đầu bật mấy cái kia ra
+            const delayStart = totalTextTime + 500; // Thời gian chờ cơ bản
+
+            setTimeout(() => {
+                // 1. Ảnh tròn bật ra trước
+                document.getElementById('slider-frame').classList.add('pop-in');
+            }, delayStart);
+
+            setTimeout(() => {
+                // 2. Thẻ tên bật ra sau ảnh 0.3s (để đè lên ảnh)
+                document.querySelector('.name-tag').classList.add('pop-in');
+            }, delayStart + 300);
+
+            setTimeout(() => {
+                // 3. Nút mở thư bật ra cuối cùng
+                document.querySelector('#screen2 .btn').classList.add('pop-in');
+            }, delayStart + 600);
+        }
+        
     </style>
 </head>
 <body>
