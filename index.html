@@ -59,21 +59,29 @@
         }
 
         /* Container chứa chữ Happy Birthday */
-        .hpbd-container {
-            display: flex; flex-direction: column; align-items: center;
-            margin-bottom: 30px; z-index: 5;
-            transform: scale(1.2); /* Phóng to cho hoành tráng */
+       /* --- COPY ĐÈ VÀO CHỖ .hpbd-text CŨ --- */
+        
+        /* Container bao quanh chữ */
+        .hpbd-text {
+            display: flex; 
+            flex-direction: column; /* Xếp dọc để Happy nằm trên Birthday */
+            align-items: center;
+            margin-bottom: 20px; 
+            z-index: 5;
+            position: relative;
         }
 
+        /* Dòng chữ riêng biệt (Happy riêng, Birthday riêng) */
         .text-line {
-            display: flex; justify-content: center;
-            margin: -5px 0; /* Thu hẹp khoảng cách 2 dòng */
+            display: flex; 
+            justify-content: center;
+            margin: -10px 0; /* Thu hẹp khoảng cách giữa 2 dòng cho khít */
         }
 
-        /* Style chung cho chữ cái */
+        /* Style chung cho từng chữ cái */
         .letter {
             font-family: 'Fredoka One', cursive;
-            font-size: 3.5rem;
+            font-size: 3.8rem; /* Chữ to hơn */
             display: inline-block;
             opacity: 0;
             transform: translateY(20px) scale(0.5);
@@ -81,30 +89,31 @@
             margin: 0 1px;
             position: relative;
             
-            /* Tạo viền đen dày như truyện tranh */
-            -webkit-text-stroke: 1.5px var(--stroke-color);
-            text-shadow: 3px 3px 0px var(--stroke-color);
+            /* TẠO VIỀN ĐEN DÀY NHƯ TRUYỆN TRANH */
+            -webkit-text-stroke: 2px #2d2d2d; 
+            color: white; /* Mặc định là màu trắng */
+            /* Bóng đổ cứng để tạo khối 3D */
+            text-shadow: 4px 4px 0px #2d2d2d;
         }
+        
+        /* Khi chữ hiện ra */
         .letter.pop { opacity: 1; transform: translateY(0) scale(1); }
 
-        /* Style riêng: HAPPY (Màu trắng) */
-        .letter.white { color: #ffffff; }
-        
-        /* Style riêng: BIRTHDAY (Màu vàng) */
-        .letter.yellow { color: #ffca28; }
+        /* Class riêng cho dòng BIRTHDAY màu vàng */
+        .letter.yellow { color: #ffeb3b; }
 
-        /* Mũ sinh nhật (Đội ở chữ Happy) */
+        /* Style cái mũ (Đội nghiêng trên chữ Y) */
         .hat-icon {
             position: absolute;
-            width: 40px;
-            top: -60px; right: -15px; /* Chỉnh vị trí mũ nằm trên góc phải */
+            width: 50px;
+            top: -70px; right: -20px;
             transform: rotate(20deg);
             opacity: 0;
-            transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+            transition: all 0.5s ease;
             z-index: 10;
         }
-        .hat-icon.drop { opacity: 1; top: -35px; }
-
+        .hat-icon.drop { opacity: 1; top: -45px; }
+        
         /* Khung ảnh tròn */
         .circle-frame {
             width: 220px; height: 220px; border-radius: 50%;
