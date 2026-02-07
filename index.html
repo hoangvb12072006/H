@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Project</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <title>Happy Birthday Thu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Fredoka+One&family=Nunito:wght@400;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-cream: #fffdf5;
             --primary-gold: #f1c40f;
-            --stroke-color: #2d2d2d; /* Màu viền đen đậm */
+            --stroke-color: #2d2d2d; /* Màu viền đen đậm style truyện tranh */
         }
 
         body {
@@ -49,78 +49,63 @@
             40%, 60% { transform: translate3d(4px, 0, 0) rotate(5deg); }
         }
 
-        /* --- MÀN 2: STYLE GIỐNG ẢNH MẪU --- */
+        /* --- MÀN 2: MAIN SCREEN --- */
         #screen2 {
-            /* Nền lưới vàng nhạt giống ảnh */
+            /* Nền lưới vàng nhạt */
             background-image: 
                 linear-gradient(rgba(255, 202, 40, 0.2) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 202, 40, 0.2) 1px, transparent 1px);
             background-size: 40px 40px;
         }
 
-        /* Container chứa chữ Happy Birthday */
-       /* --- COPY ĐÈ VÀO CHỖ .hpbd-text CŨ --- */
-        
-        /* Container bao quanh chữ */
-        .hpbd-text {
-            display: flex; 
-            flex-direction: column; /* Xếp dọc để Happy nằm trên Birthday */
-            align-items: center;
-            margin-bottom: 20px; 
-            z-index: 5;
+        /* Container chữ Happy Birthday */
+        .hpbd-container {
+            display: flex; flex-direction: column; align-items: center;
+            margin-bottom: 25px; z-index: 5;
             position: relative;
         }
 
-        /* Dòng chữ riêng biệt (Happy riêng, Birthday riêng) */
         .text-line {
-            display: flex; 
-            justify-content: center;
-            margin: -10px 0; /* Thu hẹp khoảng cách giữa 2 dòng cho khít */
+            display: flex; justify-content: center;
+            margin: -8px 0; /* Thu hẹp khoảng cách dòng */
         }
 
-        /* Style chung cho từng chữ cái */
+        /* Style chữ cái */
         .letter {
             font-family: 'Fredoka One', cursive;
-            font-size: 3.8rem; /* Chữ to hơn */
+            font-size: 3.5rem;
             display: inline-block;
             opacity: 0;
             transform: translateY(20px) scale(0.5);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             margin: 0 1px;
             position: relative;
-            
-            /* TẠO VIỀN ĐEN DÀY NHƯ TRUYỆN TRANH */
-            -webkit-text-stroke: 2px #2d2d2d; 
-            color: white; /* Mặc định là màu trắng */
-            /* Bóng đổ cứng để tạo khối 3D */
-            text-shadow: 4px 4px 0px #2d2d2d;
+            /* Viền đen dày */
+            -webkit-text-stroke: 1.5px var(--stroke-color);
+            text-shadow: 3px 3px 0px var(--stroke-color);
         }
-        
-        /* Khi chữ hiện ra */
         .letter.pop { opacity: 1; transform: translateY(0) scale(1); }
+        .letter.white { color: #ffffff; }
+        .letter.yellow { color: #ffca28; }
 
-        /* Class riêng cho dòng BIRTHDAY màu vàng */
-        .letter.yellow { color: #ffeb3b; }
-
-        /* Style cái mũ (Đội nghiêng trên chữ Y) */
+        /* Mũ sinh nhật */
         .hat-icon {
-            position: absolute;
-            width: 50px;
-            top: -70px; right: -20px;
+            position: absolute; width: 45px;
+            top: -70px; right: -15px;
             transform: rotate(20deg);
-            opacity: 0;
-            transition: all 0.5s ease;
+            opacity: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045);
             z-index: 10;
         }
-        .hat-icon.drop { opacity: 1; top: -45px; }
-        
+        .hat-icon.drop { opacity: 1; top: -38px; }
+
         /* Khung ảnh tròn */
         .circle-frame {
             width: 220px; height: 220px; border-radius: 50%;
-            border: 6px solid var(--stroke-color); /* Viền đen đậm */
-            overflow: hidden;
-            position: relative; margin: 10px 0 25px 0;
+            border: 6px solid var(--stroke-color);
+            overflow: hidden; position: relative;
             background: #fff; z-index: 2;
+            margin-bottom: 0; /* Để thẻ tên đè lên dễ dàng */
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
         }
         .circle-frame img {
             width: 100%; height: 100%; object-fit: cover;
@@ -129,22 +114,21 @@
         }
         .circle-frame img.show { opacity: 1; }
 
-        /* Thẻ tên (Màu vàng viền đen) */
-       .name-tag {
+        /* Thẻ tên đè lên ảnh */
+        .name-tag {
             background: #ffca28; 
-            padding: 10px 40px; /* Cho dài ra xíu giống ảnh */
-            border-radius: 30px; 
-            border: 3px solid #3e2723; /* Nhớ đổi màu viền nếu bạn đang dùng style truyện tranh */
-            font-weight: bold; font-size: 1.2rem; color: #3e2723;
-            box-shadow: 4px 4px 0px #3e2723;
+            padding: 10px 40px;
+            border-radius: 40px; 
+            border: 3px solid var(--stroke-color);
+            font-weight: 800; font-size: 1.4rem; color: var(--stroke-color);
+            box-shadow: 4px 4px 0px var(--stroke-color);
             
-            /* --- CÁC DÒNG QUAN TRỌNG ĐỂ ĐÈ LÊN --- */
-            position: relative; /* Để z-index hoạt động */
-            z-index: 10; /* Số lớn để đảm bảo nó nằm trên cùng */
-            margin-top: -35px; /* Kéo ngược lên trên 35px để đè vào ảnh */
-            margin-bottom: 25px; /* Đẩy nút bên dưới ra xa một chút */
+            position: relative; 
+            z-index: 10; 
+            margin-top: -35px; /* Kéo lên để đè vào ảnh */
+            margin-bottom: 25px;
         }
-        
+
         /* Nút Mở thư */
         .btn {
             background: #ffca28; border: 3px solid var(--stroke-color);
@@ -153,18 +137,29 @@
             cursor: pointer;
             box-shadow: 4px 4px 0px var(--stroke-color);
             transition: transform 0.1s;
-            z-index: 10; font-family: 'Nunito', sans-serif;
+            z-index: 5; font-family: 'Nunito', sans-serif;
         }
         .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--stroke-color); }
 
-        /* Các ngôi sao trang trí (Style truyện tranh) */
+        /* --- HIỆU ỨNG BẬT RA (POP-OUT) CHO ẢNH, TÊN, NÚT --- */
+        @keyframes popOut {
+            0% { opacity: 0; transform: scale(0.5) translateY(50px); }
+            70% { opacity: 1; transform: scale(1.1) translateY(-10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        /* Ẩn mặc định */
+        .circle-frame, .name-tag, #screen2 .btn { opacity: 0; transform: scale(0.5); }
+        /* Class kích hoạt */
+        .pop-in { animation: popOut 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; }
+
+        /* Ngôi sao lấp lánh */
         .star-decor {
             position: absolute; color: var(--stroke-color);
             font-size: 20px; animation: twinkle 2s infinite;
         }
         @keyframes twinkle { 0%, 100% { opacity: 1; scale: 1; } 50% { opacity: 0.5; scale: 0.8; } }
 
-        /* Hiệu ứng hoa rơi */
+        /* Hoa rơi */
         .petal {
             position: absolute; background: #ffcdd2;
             width: 15px; height: 15px; border-radius: 15px 0 15px 0;
@@ -199,64 +194,6 @@
         .photo-column { display: flex; flex-direction: column; position: absolute; bottom: -100%; }
         .float-img { width: 100%; max-width: 150px; border: 4px solid #fff; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         @keyframes floatUp { from { transform: translateY(0); } to { transform: translateY(-200%); } }
-
-        // Hàm tạo chữ style truyện tranh 2 dòng VÀ KÍCH HOẠT CÁC PHẦN KHÁC
-        function animateBirthdayText() {
-            const container = document.getElementById('hpbd-text');
-            container.innerHTML = ""; // Xóa sạch cũ
-
-            // --- (Phần tạo chữ giữ nguyên) ---
-            // DÒNG 1: HAPPY
-            const line1 = document.createElement('div'); line1.className = 'text-line';
-            const text1 = "HAPPY";
-            for(let i=0; i<text1.length; i++) {
-                const span = document.createElement('span'); span.className = 'letter'; span.textContent = text1[i];
-                if(i === 4) {
-                    const hat = document.createElement('img'); hat.src = "https://cdn-icons-png.flaticon.com/512/864/864837.png"; hat.className = 'hat-icon'; span.appendChild(hat);
-                }
-                line1.appendChild(span);
-            }
-            container.appendChild(line1);
-
-            // DÒNG 2: BIRTHDAY
-            const line2 = document.createElement('div'); line2.className = 'text-line';
-            const text2 = "BIRTHDAY";
-            for(let i=0; i<text2.length; i++) {
-                const span = document.createElement('span'); span.className = 'letter yellow'; span.textContent = text2[i]; line2.appendChild(span);
-            }
-            container.appendChild(line2);
-
-            // --- ANIMATION CHẠY CHỮ ---
-            const letters = document.querySelectorAll('.letter');
-            let totalTextTime = 0; // Biến để tính tổng thời gian chạy chữ
-            letters.forEach((letter, index) => {
-                setTimeout(() => {
-                    letter.classList.add('pop');
-                    if (index === 4) { setTimeout(() => { letter.querySelector('.hat-icon').classList.add('drop'); }, 300); }
-                }, index * 100);
-                totalTextTime = index * 100; // Cập nhật thời gian của chữ cuối cùng
-            });
-
-            // --- PHẦN MỚI THÊM: KÍCH HOẠT ẢNH, THẺ TÊN, NÚT BẬT RA ---
-            // Đợi chữ chạy gần xong (khoảng 1.2s sau) thì mới bắt đầu bật mấy cái kia ra
-            const delayStart = totalTextTime + 500; // Thời gian chờ cơ bản
-
-            setTimeout(() => {
-                // 1. Ảnh tròn bật ra trước
-                document.getElementById('slider-frame').classList.add('pop-in');
-            }, delayStart);
-
-            setTimeout(() => {
-                // 2. Thẻ tên bật ra sau ảnh 0.3s (để đè lên ảnh)
-                document.querySelector('.name-tag').classList.add('pop-in');
-            }, delayStart + 300);
-
-            setTimeout(() => {
-                // 3. Nút mở thư bật ra cuối cùng
-                document.querySelector('#screen2 .btn').classList.add('pop-in');
-            }, delayStart + 600);
-        }
-        
     </style>
 </head>
 <body>
@@ -269,9 +206,9 @@
     </div>
 
     <div id="screen2" class="screen">
-        <div class="star-decor" style="top: 10%; left: 10%;">✨</div>
-        <div class="star-decor" style="top: 20%; right: 15%; animation-delay: 0.5s;">✦</div>
-        <div class="star-decor" style="bottom: 15%; left: 20%; animation-delay: 1s;">✨</div>
+        <div class="star-decor" style="top: 15%; left: 10%;">✨</div>
+        <div class="star-decor" style="top: 25%; right: 15%; animation-delay: 0.5s;">✦</div>
+        <div class="star-decor" style="bottom: 20%; left: 20%; animation-delay: 1s;">✨</div>
         <div class="star-decor" style="bottom: 30%; right: 10%;">✦</div>
 
         <div class="hpbd-container" id="hpbd-container"></div>
@@ -282,9 +219,9 @@
             <img src="https://i.pinimg.com/564x/93/29/77/93297746592237d15904099587424683.jpg">
         </div>
 
-        <div class="name-tag">❤️ Ju Jing Yi ❤️</div>
+        <div class="name-tag">❤️ Thu ❤️</div>
         
-        <button class="btn" onclick="goToScreen3()">Mở thư</button>
+        <button class="btn" onclick="goToScreen3()">Mở thư 💌</button>
     </div>
 
     <div id="screen3" class="screen">
@@ -311,67 +248,65 @@
         // --- MÀN 1 -> MÀN 2 ---
         function goToScreen2() {
             const screen1 = document.getElementById('screen1');
-            screen1.classList.add('fade-out');
+            screen1.classList.add('fade-out'); // Hiệu ứng mờ dần
+
             setTimeout(() => {
                 switchScreen('screen1', 'screen2');
-                animateComicText(); // Chạy hiệu ứng chữ style mới
+                animateBirthdayText(); // Chạy hiệu ứng chữ và nảy ảnh
                 startSlider();
                 createPetals();
+                
+                // Code phát nhạc (Đang tắt)
                 // var audio = document.getElementById("bg-music");
                 // if(audio) audio.play().catch(e => console.log(e));
             }, 1000);
         }
 
-        // --- HIỆU ỨNG CHỮ STYLE TRUYỆN TRANH ---
-        function animateComicText() {
+        // --- LOGIC CHỮ & HIỆU ỨNG NẢY (QUAN TRỌNG) ---
+        function animateBirthdayText() {
             const container = document.getElementById('hpbd-container');
-            container.innerHTML = ""; // Xóa cũ
+            container.innerHTML = ""; 
 
             // Dòng 1: HAPPY (Trắng)
-            const line1 = document.createElement('div');
-            line1.className = 'text-line';
+            const line1 = document.createElement('div'); line1.className = 'text-line';
             const text1 = "HAPPY";
             for(let i=0; i<text1.length; i++) {
-                const span = document.createElement('span');
-                span.className = 'letter white'; // Class màu trắng
-                span.textContent = text1[i];
-                
-                // Gắn mũ vào chữ Y của HAPPY (index 4)
+                const span = document.createElement('span'); span.className = 'letter white'; span.textContent = text1[i];
+                // Gắn mũ vào chữ Y (index 4)
                 if(i === 4) {
-                    const hat = document.createElement('img');
-                    hat.src = "https://cdn-icons-png.flaticon.com/512/864/864837.png";
-                    hat.className = 'hat-icon';
-                    span.appendChild(hat);
+                    const hat = document.createElement('img'); hat.src = "https://cdn-icons-png.flaticon.com/512/864/864837.png"; hat.className = 'hat-icon'; span.appendChild(hat);
                 }
                 line1.appendChild(span);
             }
             container.appendChild(line1);
 
             // Dòng 2: BIRTHDAY (Vàng)
-            const line2 = document.createElement('div');
-            line2.className = 'text-line';
+            const line2 = document.createElement('div'); line2.className = 'text-line';
             const text2 = "BIRTHDAY";
             for(let i=0; i<text2.length; i++) {
-                const span = document.createElement('span');
-                span.className = 'letter yellow'; // Class màu vàng
-                span.textContent = text2[i];
-                line2.appendChild(span);
+                const span = document.createElement('span'); span.className = 'letter yellow'; span.textContent = text2[i]; line2.appendChild(span);
             }
             container.appendChild(line2);
 
-            // Animation hiện chữ
+            // Chạy Animation Chữ
             const letters = document.querySelectorAll('.letter');
+            let totalTime = 0;
             letters.forEach((letter, index) => {
                 setTimeout(() => {
                     letter.classList.add('pop');
-                    // Nếu là chữ Y của HAPPY (là phần tử thứ 5, index 4) thì thả mũ
-                    if (index === 4) {
-                        setTimeout(() => {
-                            letter.querySelector('.hat-icon').classList.add('drop');
-                        }, 300);
+                    if (index === 4) { // Thả mũ
+                        setTimeout(() => { letter.querySelector('.hat-icon').classList.add('drop'); }, 300);
                     }
                 }, index * 100);
+                totalTime = index * 100;
             });
+
+            // Sau khi chữ chạy xong thì mới cho Ảnh, Tên, Nút nảy ra
+            const delayStart = totalTime + 500;
+            
+            setTimeout(() => { document.getElementById('slider-frame').classList.add('pop-in'); }, delayStart);
+            setTimeout(() => { document.querySelector('.name-tag').classList.add('pop-in'); }, delayStart + 300);
+            setTimeout(() => { document.querySelector('#screen2 .btn').classList.add('pop-in'); }, delayStart + 600);
         }
 
         // Slider ảnh
@@ -398,7 +333,8 @@
         }
 
         // --- MÀN 2 -> MÀN 3 ---
-        const message = "Chúc mừng sinh nhật! \n\nTuổi mới rạng rỡ, xinh đẹp và hạnh phúc nhé. \n\nCảm ơn vì đã luôn ở bên tớ! ❤️";
+        const message = "Chúc mừng sinh nhật Thu! \n\nChúc cậu tuổi mới luôn rạng rỡ, xinh đẹp và ngập tràn hạnh phúc. Mong rằng mọi điều ước của cậu trong ngày hôm nay đều sẽ thành hiện thực. \n\nCảm ơn vì đã xuất hiện trong cuộc đời này! ❤️";
+        
         function goToScreen3() {
             switchScreen('screen2', 'screen3');
             let i = 0;
@@ -427,7 +363,7 @@
             }());
         }
 
-        // --- MÀN 3 -> MÀN 4 ---
+        // --- MÀN 3 -> MÀN 4 (ẢNH BAY) ---
         const photoList = [
             'https://i.pinimg.com/564x/b8/00/f8/b800f89552973956ec944f23cb82103f.jpg',
             'https://i.pinimg.com/564x/4d/8e/5e/4d8e5e7836696b865538356942442436.jpg',
@@ -435,6 +371,7 @@
             'https://i.pinimg.com/564x/2b/38/26/2b38263592185b3769994c969399435b.jpg',
             'https://i.pinimg.com/564x/8e/0c/3e/8e0c3e3870335e6795817c76752763f0.jpg'
         ];
+
         function goToScreen4() {
             const screen4 = switchScreen('screen3', 'screen4');
             const longList = [...photoList, ...photoList, ...photoList, ...photoList];
