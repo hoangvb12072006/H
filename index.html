@@ -3,559 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ĐẠI TIỆC SINH NHẬT - ULTIMATE EDITION</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Orbitron:wght@500&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <title>Sinh Nhật Nhiệm Màu - Enchanted Forest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
     <style>
         /* =========================================
-           1. CẤU HÌNH CORE & RESET
+           CSS STYLES - GIAO DIỆN CHÍNH
            ========================================= */
         :root {
-            --primary-color: #ff00de;
-            --secondary-color: #00eaff;
-            --bg-color: #050505;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --gold: #ffd700;
+            --magic-purple: #b300ff;
+            --deep-bg: #0a0a2a;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-color);
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
+            background: linear-gradient(to bottom, #020111, #110a2e, #0a2e1d);
             height: 100vh;
-            perspective: 1000px; /* Tạo chiều sâu 3D */
-        }
-
-        /* =========================================
-           2. MÀN HÌNH LOADING (INTRO)
-           ========================================= */
-        #loading-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: black;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 1s ease;
-        }
-
-        .loader {
-            width: 250px;
-            height: 5px;
-            background: #333;
-            border-radius: 5px;
             overflow: hidden;
+            font-family: 'Quicksand', sans-serif;
             position: relative;
         }
 
-        .loader-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 0 20px var(--primary-color);
-            transition: width 0.1s;
-        }
-
-        .loading-text {
-            margin-top: 15px;
-            font-family: 'Orbitron', sans-serif;
-            color: var(--secondary-color);
-            letter-spacing: 2px;
-            font-size: 14px;
-        }
-
-        #start-btn {
-            display: none; /* Hiện khi load xong */
-            margin-top: 30px;
-            padding: 15px 40px;
-            background: transparent;
-            border: 2px solid var(--secondary-color);
-            color: var(--secondary-color);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 18px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            transition: 0.3s;
-            box-shadow: 0 0 15px var(--secondary-color);
-        }
-
-        #start-btn:hover {
-            background: var(--secondary-color);
-            color: black;
-            box-shadow: 0 0 40px var(--secondary-color);
-        }
-
-        /* =========================================
-           3. BACKGROUND & CANVAS PHÁO HOA
-           ========================================= */
-        #canvas-container {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+        /* Lớp phủ rừng cây mờ ảo phía sau */
+        .forest-bg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background-image: url('https://i.imgur.com/7QSZH9Z.png'); /* Ảnh silouhette rừng cây */
+            background-repeat: repeat-x;
+            background-position: bottom;
+            background-size: auto 100%;
+            opacity: 0.3;
             z-index: 1;
+            pointer-events: none;
         }
-        canvas { display: block; }
 
-        /* =========================================
-           4. HỆ THỐNG ẢNH BAY (ADVANCED)
-           ========================================= */
-        #floating-gallery {
+        /* Các lớp Canvas */
+        #bg-canvas, #burst-canvas, #mouse-trail-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+        #bg-canvas { z-index: 2; opacity: 0.6; } /* Đom đóm nền */
+        #mouse-trail-canvas { z-index: 3; } /* Vệt chuột */
+        #burst-canvas { z-index: 4; mix-blend-mode: screen; } /* Vụ nổ phép thuật */
+
+        /* Container chứa ảnh bay */
+        #bubble-container {
             position: absolute;
             width: 100%; height: 100%;
             z-index: 5;
             pointer-events: none;
         }
 
-        .float-item {
+        /* Style cho quả cầu ảnh */
+        .photo-bubble {
             position: absolute;
-            bottom: -200px;
-            padding: 5px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            transform-style: preserve-3d;
+            bottom: -150px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 
+                0 0 10px var(--gold),
+                inset 0 0 20px var(--magic-purple);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            animation: bubbleRise linear forwards, gentleRotate 20s infinite linear;
+            will-change: transform;
         }
 
-        .float-item img {
-            width: 100%;
-            border-radius: 5px;
-            display: block;
-        }
-
-        @keyframes floatUpRotate {
-            0% { transform: translateY(0) rotateX(0) rotateY(0) scale(0.8); opacity: 0; }
-            10% { opacity: 1; }
-            100% { transform: translateY(-120vh) rotateX(360deg) rotateY(180deg) scale(1); opacity: 0; }
-        }
-
-        /* =========================================
-           5. 3D CUBE GALLERY (KHỐI LẬP PHƯƠNG)
-           ========================================= */
-        .scene-3d {
-            position: absolute;
-            top: 40%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px; height: 200px;
-            perspective: 1000px;
-            z-index: 20;
-            display: none; /* Ẩn lúc đầu */
-        }
-
-        .cube {
+        .photo-bubble img {
             width: 100%; height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: spinCube 15s infinite linear;
+            object-fit: cover;
+            opacity: 0.9;
         }
 
-        .cube-face {
+        /* Animation cho ảnh */
+        @keyframes bubbleRise {
+            to { transform: translateY(-130vh) translateX(var(--sway-end)); opacity: 0; }
+        }
+        @keyframes gentleRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Nội dung chữ chính */
+        .main-content {
             position: absolute;
-            width: 200px; height: 200px;
-            border: 2px solid var(--secondary-color);
-            background: rgba(0, 234, 255, 0.1);
-            box-shadow: 0 0 20px var(--secondary-color) inset;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; font-weight: bold; color: white;
-            backface-visibility: visible;
-        }
-
-        .cube-face img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-
-        .front  { transform: rotateY(0deg) translateZ(100px); }
-        .back   { transform: rotateY(180deg) translateZ(100px); }
-        .right  { transform: rotateY(90deg) translateZ(100px); }
-        .left   { transform: rotateY(-90deg) translateZ(100px); }
-        .top    { transform: rotateX(90deg) translateZ(100px); }
-        .bottom { transform: rotateX(-90deg) translateZ(100px); }
-
-        @keyframes spinCube {
-            from { transform: rotateX(0deg) rotateY(0deg); }
-            to { transform: rotateX(360deg) rotateY(360deg); }
-        }
-
-        /* =========================================
-           6. UI CHÍNH & TEXT
-           ========================================= */
-        .main-ui {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding-bottom: 50px;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 2s;
-        }
-
-        .hbd-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 6rem;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
             text-align: center;
-            line-height: 1;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #ff00de, 0 0 30px #ff00de;
-            animation: neonPulse 1.5s infinite alternate;
+            color: var(--gold);
+            pointer-events: none;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
         }
 
-        .typewriter-box {
-            background: rgba(0,0,0,0.6);
+        h1.magic-title {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, var(--gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        p.magic-wish {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            max-width: 700px;
+            background: rgba(0,0,0,0.4);
             padding: 20px;
             border-radius: 15px;
-            border: 1px solid var(--glass-border);
-            max-width: 800px;
-            min-height: 100px;
-            backdrop-filter: blur(10px);
-            text-align: center;
-            box-shadow: 0 0 30px rgba(0, 234, 255, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(5px);
         }
 
-        #typing-text {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #eee;
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 5px var(--gold)); }
+            to { filter: drop-shadow(0 0 25px var(--magic-purple)); }
         }
-
-        /* =========================================
-           7. MUSIC PLAYER UI
-           ========================================= */
-        .music-player {
+        
+        /* Hiệu ứng mặt nước ở đáy */
+        .water-surface {
             position: absolute;
-            top: 20px; right: 20px;
-            width: 300px;
-            background: rgba(0,0,0,0.8);
-            border: 1px solid var(--secondary-color);
-            border-radius: 10px;
-            padding: 15px;
-            z-index: 100;
-            display: none; /* Hiện sau khi start */
-            box-shadow: 0 0 15px var(--secondary-color);
-        }
-
-        .track-info {
-            font-size: 14px;
-            margin-bottom: 10px;
-            color: var(--primary-color);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .visualizer {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            height: 30px;
-        }
-
-        .bar {
-            width: 5px;
-            background: var(--secondary-color);
-            animation: equalize 0.5s infinite alternate;
-        }
-
-        /* Tạo độ trễ animation cho các thanh nhạc */
-        .bar:nth-child(1) { animation-duration: 0.4s; height: 40%; }
-        .bar:nth-child(2) { animation-duration: 0.6s; height: 80%; }
-        .bar:nth-child(3) { animation-duration: 0.3s; height: 50%; }
-        .bar:nth-child(4) { animation-duration: 0.5s; height: 90%; }
-        .bar:nth-child(5) { animation-duration: 0.4s; height: 60%; }
-        .bar:nth-child(6) { animation-duration: 0.7s; height: 100%; }
-
-        @keyframes equalize {
-            0% { height: 20%; }
-            100% { height: 100%; box-shadow: 0 0 10px var(--secondary-color); }
-        }
-
-        @keyframes neonPulse {
-            from { text-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de; }
-            to { text-shadow: 0 0 20px #00eaff, 0 0 40px #00eaff, 0 0 60px #00eaff; }
+            bottom: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(to top, rgba(10, 46, 29, 0.8), transparent);
+            z-index: 6;
+            filter: blur(10px);
         }
 
     </style>
 </head>
 <body>
 
-    <div id="loading-screen">
-        <div class="loader">
-            <div class="loader-bar" id="progress"></div>
-        </div>
-        <div class="loading-text" id="loading-status">KHỞI TẠO DỮ LIỆU SINH NHẬT...</div>
-        <button id="start-btn" onclick="startParty()">BẮT ĐẦU BUỔI TIỆC</button>
+    <div class="forest-bg"></div>
+    <canvas id="bg-canvas"></canvas>
+    <canvas id="mouse-trail-canvas"></canvas>
+    <canvas id="burst-canvas"></canvas>
+    
+    <div id="bubble-container"></div>
+    <div class="water-surface"></div>
+
+    <div class="main-content">
+        <h1 class="magic-title">Happy Birthday</h1>
+        <p class="magic-wish">Chào mừng đến với khu rừng nhiệm màu! Chúc bạn một tuổi mới tràn đầy phép màu, vẻ đẹp và những điều kỳ diệu. Mong mọi ước nguyện của bạn sẽ bay cao và tỏa sáng như những tinh linh đêm nay.</p>
     </div>
 
-    <div class="music-player" id="player">
-        <div class="track-info">
-            <span>♫ Happy Birthday Remix</span>
-            <span style="color:red">LIVE</span>
-        </div>
-        <div class="visualizer">
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-        </div>
-        </div>
-
-    <div id="canvas-container">
-        <canvas id="fireworks"></canvas>
-    </div>
-
-    <div class="scene-3d" id="cube-gallery">
-        <div class="cube">
-            <div class="cube-face front"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=300" alt="1"></div>
-            <div class="cube-face back"><img src="https://images.unsplash.com/photo-1514525253440-b39345208668?w=300" alt="2"></div>
-            <div class="cube-face right"><img src="https://images.unsplash.com/photo-1530103862676-de3c9a59af38?w=300" alt="3"></div>
-            <div class="cube-face left"><img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=300" alt="4"></div>
-            <div class="cube-face top"><img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300" alt="5"></div>
-            <div class="cube-face bottom"><img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?w=300" alt="6"></div>
-        </div>
-    </div>
-
-    <div id="floating-gallery"></div>
-
-    <div class="main-ui" id="main-ui">
-        <h1 class="hbd-title">Happy Birthday</h1>
-        <div class="typewriter-box">
-            <p id="typing-text"></p>
-        </div>
-    </div>
 
     <script>
-        // ============================================
-        // CONFIG DỮ LIỆU NGƯỜI DÙNG
-        // ============================================
+        // =================================================================
+        // KHU VỰC CẤU HÌNH CỦA BẠN (THAY ĐỔI Ở ĐÂY)
+        // =================================================================
         const CONFIG = {
-            wish: "Chúc mừng sinh nhật! 🎂 Chúc bạn tuổi mới luôn vui vẻ, hạnh phúc và thành công rực rỡ. Mong rằng mọi ước mơ của bạn sẽ bay cao như những chùm pháo hoa đêm nay! Hãy luôn mỉm cười và tỏa sáng nhé! ❤️",
+            // Danh sách ảnh của bạn (Càng nhiều càng tốt)
             photos: [
-                "https://images.unsplash.com/photo-1530103862676-de3c9a59af38?w=400",
-                "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400",
-                "https://images.unsplash.com/photo-1514525253440-b39345208668?w=400",
-                "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400",
-                "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=400",
-                // Thêm link ảnh của bạn vào đây
-            ]
+                 "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400",
+                 "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400",
+                 "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400",
+                 "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400",
+                 // Thêm link ảnh của bạn vào đây
+            ],
+            // Màu sắc chủ đạo cho các vụ nổ phép thuật (Hue: 0-360)
+            magicColors: [50, 280, 200] // Vàng, Tím, Xanh ngọc
         };
 
-        // ============================================
-        // 1. XỬ LÝ LOADING SCREEN
-        // ============================================
-        let loadPercent = 0;
-        const progressBar = document.getElementById('progress');
-        const statusText = document.getElementById('loading-status');
-        const startBtn = document.getElementById('start-btn');
-        const loadingScreen = document.getElementById('loading-screen');
 
-        const loadInterval = setInterval(() => {
-            loadPercent += Math.random() * 5;
-            if (loadPercent >= 100) {
-                loadPercent = 100;
-                clearInterval(loadInterval);
-                statusText.innerText = "HỆ THỐNG SẴN SÀNG!";
-                startBtn.style.display = 'block';
+        // =================================================================
+        // PHẦN 1: HỆ THỐNG ẢNH QUẢ CẦU BAY (BUBBLE PHOTOS)
+        // =================================================================
+        const bubbleContainer = document.getElementById('bubble-container');
+
+        function createMagicBubble() {
+            if(document.hidden) return;
+
+            const bubble = document.createElement('div');
+            bubble.className = 'photo-bubble';
+            
+            const img = document.createElement('img');
+            img.src = CONFIG.photos[Math.floor(Math.random() * CONFIG.photos.length)];
+            bubble.appendChild(img);
+
+            // Random kích thước (80px - 160px)
+            const size = Math.random() * 80 + 80;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+
+            // Random vị trí xuất phát ngang
+            bubble.style.left = `${Math.random() * 90 + 5}%`;
+
+            // Random độ lắc lư (sway) khi bay lên
+            const swayEnd = (Math.random() - 0.5) * 200; // Lệch trái phải tối đa 100px
+            bubble.style.setProperty('--sway-end', `${swayEnd}px`);
+
+            // Random thời gian bay (bay chậm: 15s - 25s)
+            const duration = Math.random() * 10 + 15;
+            bubble.style.animationDuration = `${duration}s, ${Math.random() * 10 + 10}s`; // Bay và xoay
+
+            bubbleContainer.appendChild(bubble);
+
+            setTimeout(() => bubble.remove(), duration * 1000);
+        }
+        // Tạo ảnh mới mỗi 1.2 giây
+        setInterval(createMagicBubble, 1200);
+
+
+        // =================================================================
+        // PHẦN 2: HỆ THỐNG CANVAS (Đom đóm, Vệt chuột, Nổ phép thuật)
+        // =================================================================
+        const bgCanvas = document.getElementById('bg-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        const burstCanvas = document.getElementById('burst-canvas');
+        const burstCtx = burstCanvas.getContext('2d');
+        const trailCanvas = document.getElementById('mouse-trail-canvas');
+        const trailCtx = trailCanvas.getContext('2d');
+
+        let width, height;
+        function resizeCanvases() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            bgCanvas.width = burstCanvas.width = trailCanvas.width = width;
+            bgCanvas.height = burstCanvas.height = trailCanvas.height = height;
+        }
+        window.addEventListener('resize', resizeCanvases);
+        resizeCanvases();
+
+        // --- Class Hạt cơ bản (Dùng chung) ---
+        class Particle {
+            constructor(x, y, hue, speedMult = 1, sizeMult = 1) {
+                this.x = x; this.y = y;
+                this.hue = hue;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = Math.random() * speedMult;
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed;
+                this.size = Math.random() * sizeMult + 1;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.02 + 0.01;
+                this.gravity = 0.02;
             }
-            progressBar.style.width = loadPercent + "%";
-        }, 100);
-
-        function startParty() {
-            loadingScreen.style.opacity = 0;
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                initParty();
-            }, 1000);
-            
-            // Nếu muốn có nhạc, bỏ comment dòng dưới và thêm file nhạc
-            // var audio = new Audio('happy_birthday.mp3'); audio.play();
+            update() {
+                this.x += this.vx; this.y += this.vy + this.gravity;
+                this.vx *= 0.96; this.vy *= 0.96; // Ma sát
+                this.alpha -= this.decay;
+            }
+            draw(ctx) {
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
         }
 
-        function initParty() {
-            document.getElementById('main-ui').style.opacity = 1;
-            document.getElementById('player').style.display = 'block';
-            document.getElementById('cube-gallery').style.display = 'block';
-            
-            startFireworks();
-            startFloatingPhotos();
-            typeWriter();
-        }
+        let bursts = []; // Mảng chứa các hạt nổ
+        let fireflies = []; // Mảng đom đóm
+        let trailParticles = []; // Mảng vệt chuột
 
-        // ============================================
-        // 2. XỬ LÝ TEXT (TYPEWRITER)
-        // ============================================
-        let charIndex = 0;
-        const typeTextElement = document.getElementById('typing-text');
+        // --- Tạo vụ nổ phép thuật ---
+        function createMagicalBurst(x, y) {
+            const hue = CONFIG.magicColors[Math.floor(Math.random() * CONFIG.magicColors.length)];
+            for(let i = 0; i < 50; i++) {
+                // Tốc độ nhanh hơn, kích thước lớn hơn cho vụ nổ
+                bursts.push(new Particle(x, y, hue + Math.random()*40 - 20, 6, 3));
+            }
+        }
         
-        function typeWriter() {
-            if (charIndex < CONFIG.wish.length) {
-                typeTextElement.innerHTML += CONFIG.wish.charAt(charIndex);
-                charIndex++;
-                setTimeout(typeWriter, 50); // Tốc độ gõ chữ
-            }
-        }
+        // Tự động tạo vụ nổ ngẫu nhiên
+        setInterval(() => {
+            createMagicalBurst(Math.random() * width, Math.random() * height * 0.7);
+        }, 1500);
 
-        // ============================================
-        // 3. XỬ LÝ ẢNH BAY (ADVANCED)
-        // ============================================
-        function startFloatingPhotos() {
-            const container = document.getElementById('floating-gallery');
-            
-            setInterval(() => {
-                const el = document.createElement('div');
-                el.className = 'float-item';
-                
-                // Random ảnh
-                const img = document.createElement('img');
-                img.src = CONFIG.photos[Math.floor(Math.random() * CONFIG.photos.length)];
-                el.appendChild(img);
+        burstCanvas.addEventListener('click', (e) => createMagicalBurst(e.clientX, e.clientY));
 
-                // Random vị trí & kích thước
-                const size = Math.random() * 100 + 100; // 100px - 200px
-                const left = Math.random() * 90;
-                const duration = Math.random() * 10 + 10; // 10s - 20s
 
-                el.style.width = size + 'px';
-                el.style.left = left + '%';
-                el.style.animation = `floatUpRotate ${duration}s linear forwards`;
-
-                container.appendChild(el);
-
-                // Dọn dẹp DOM
-                setTimeout(() => { el.remove(); }, duration * 1000);
-            }, 1000); // Mỗi 1 giây ra 1 ảnh
-        }
-
-        // ============================================
-        // 4. HỆ THỐNG PHÁO HOA (CANVAS ENGINE)
-        // ============================================
-        function startFireworks() {
-            const canvas = document.getElementById('fireworks');
-            const ctx = canvas.getContext('2d');
-            let width = window.innerWidth;
-            let height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-
-            window.addEventListener('resize', () => {
-                width = window.innerWidth;
-                height = window.innerHeight;
-                canvas.width = width;
-                canvas.height = height;
-            });
-
-            // Lớp Firework (Tên lửa bay lên)
-            class Firework {
-                constructor(x, y, targetX, targetY) {
-                    this.x = x; this.y = y;
-                    this.targetX = targetX; this.targetY = targetY;
-                    this.speed = 3;
-                    this.angle = Math.atan2(targetY - y, targetX - x);
-                    this.particles = [];
-                    this.alive = true;
-                }
-                update() {
-                    const vx = Math.cos(this.angle) * this.speed;
-                    const vy = Math.sin(this.angle) * this.speed;
-                    this.x += vx; this.y += vy;
-                    
-                    // Kiểm tra đến đích chưa (sai số 10px)
-                    if (Math.abs(this.x - this.targetX) < 10 && Math.abs(this.y - this.targetY) < 10) {
-                        this.alive = false;
-                        createExplosion(this.targetX, this.targetY);
-                    }
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                    ctx.fillStyle = 'white';
-                    ctx.fill();
-                }
-            }
-
-            // Lớp Particle (Hạt nổ)
-            class Particle {
-                constructor(x, y, color) {
-                    this.x = x; this.y = y;
-                    this.color = color;
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 4 + 1;
-                    this.vx = Math.cos(angle) * speed;
-                    this.vy = Math.sin(angle) * speed;
-                    this.alpha = 1;
-                    this.gravity = 0.05;
-                    this.friction = 0.98;
-                }
-                update() {
-                    this.vx *= this.friction;
-                    this.vy *= this.friction;
-                    this.vy += this.gravity;
-                    this.x += this.vx;
-                    this.y += this.vy;
-                    this.alpha -= 0.01;
-                }
-                draw() {
-                    ctx.save();
-                    ctx.globalAlpha = this.alpha;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                    ctx.restore();
-                }
-            }
-
-            let fireworks = [];
-            let particles = [];
-
-            function createExplosion(x, y) {
-                const colors = ['#ff0040', '#00ff40', '#0040ff', '#ffff00', '#ff00de', '#00eaff'];
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                for (let i = 0; i < 80; i++) {
-                    particles.push(new Particle(x, y, color));
-                }
-            }
-
-            function animate() {
-                // Tạo hiệu ứng vệt mờ (Motion Trail)
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; 
-                ctx.fillRect(0, 0, width, height);
-
-                // Tự động bắn pháo hoa ngẫu nhiên
-                if (Math.random() < 0.03) { // 3% cơ hội mỗi frame
-                    const startX = Math.random() * width;
-                    const targetX = Math.random() * width;
-                    const targetY = Math.random() * height / 2;
-                    fireworks.push(new Firework(startX, height, targetX, targetY));
-                }
-
-                // Update & Draw Fireworks
-                fireworks.forEach((fw, index) => {
-                    fw.update();
-                    fw.draw();
-                    if (!fw.alive) fireworks.splice(index, 1);
-                });
-
-                // Update & Draw Particles
-                particles.forEach((p, index) => {
-                    p.update();
-                    p.draw();
-                    if (p.alpha <= 0) particles.splice(index, 1);
-                });
-
-                requestAnimationFrame(animate);
-            }
-            animate();
-            
-            // Click để bắn pháo hoa
-            canvas.addEventListener('mousedown', (e) => {
-                fireworks.push(new Firework(width/2, height, e.clientX, e.clientY));
+        // --- Tạo đom đóm nền ---
+        for(let i = 0; i < 100; i++) {
+            fireflies.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 2,
+                speedY: Math.random() * 0.5 - 0.25, // Bay lên xuống chậm
+                speedX: Math.random() * 0.4 - 0.2,
+                alpha: Math.random(),
+                alphaChange: Math.random() * 0.02 - 0.01
             });
         }
+
+        // --- Xử lý vệt chuột ---
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            // Tạo hạt khi di chuột
+            for(let i=0; i<2; i++) {
+                 trailParticles.push(new Particle(mouseX, mouseY, 50, 2, 1.5)); // Màu vàng
+            }
+        });
+
+
+        // =================================================================
+        // VÒNG LẶP HOẠT HÌNH CHÍNH (RENDER LOOP)
+        // =================================================================
+        function animate() {
+            // 1. Render Đom đóm (Background)
+            bgCtx.clearRect(0, 0, width, height);
+            bgCtx.fillStyle = '#ffd700'; // Màu vàng đom đóm
+            fireflies.forEach(f => {
+                f.y -= f.speedY; f.x += f.speedX;
+                f.alpha += f.alphaChange;
+                if(f.alpha <= 0 || f.alpha >= 1) f.alphaChange *= -1; // Nhấp nháy
+                if(f.y < 0) f.y = height; if(f.y > height) f.y = 0; // Lặp lại vị trí
+                bgCtx.globalAlpha = f.alpha;
+                bgCtx.beginPath(); bgCtx.arc(f.x, f.y, f.size, 0, Math.PI*2); bgCtx.fill();
+            });
+            bgCtx.globalAlpha = 1;
+
+            // 2. Render Vụ nổ phép thuật
+            burstCtx.globalCompositeOperation = 'destination-out';
+            burstCtx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Tạo vệt mờ nhẹ
+            burstCtx.fillRect(0, 0, width, height);
+            burstCtx.globalCompositeOperation = 'lighter';
+            bursts.forEach((p, i) => {
+                p.update(); p.draw(burstCtx);
+                if(p.alpha <= 0) bursts.splice(i, 1);
+            });
+
+             // 3. Render Vệt chuột
+            trailCtx.clearRect(0, 0, width, height);
+            trailCtx.globalCompositeOperation = 'lighter';
+             trailParticles.forEach((p, i) => {
+                p.update(); p.draw(trailCtx);
+                p.size *= 0.95; // Thu nhỏ dần
+                if(p.alpha <= 0) trailParticles.splice(i, 1);
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
     </script>
 </body>
 </html>
