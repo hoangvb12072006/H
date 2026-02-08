@@ -3,347 +3,559 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sinh Nhật Nhiệm Màu - Enchanted Forest</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    <title>Gửi Người Đặc Biệt - Happy Birthday</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
     <style>
         /* =========================================
-           CSS STYLES - GIAO DIỆN CHÍNH
+           1. RESET & GLOBAL STYLES
            ========================================= */
         :root {
-            --gold: #ffd700;
-            --magic-purple: #b300ff;
-            --deep-bg: #0a0a2a;
+            --primary: #d4af37; /* Màu vàng kim */
+            --secondary: #c41e3a; /* Màu đỏ nhung */
+            --bg-dark: #090909;
+            --text-glow: 0 0 10px rgba(212, 175, 55, 0.7);
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: linear-gradient(to bottom, #020111, #110a2e, #0a2e1d);
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; /* Không thanh cuộn */
             height: 100vh;
-            overflow: hidden;
-            font-family: 'Quicksand', sans-serif;
-            position: relative;
+            perspective: 1000px;
         }
 
-        /* Lớp phủ rừng cây mờ ảo phía sau */
-        .forest-bg {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background-image: url('https://i.imgur.com/7QSZH9Z.png'); /* Ảnh silouhette rừng cây */
-            background-repeat: repeat-x;
-            background-position: bottom;
-            background-size: auto 100%;
-            opacity: 0.3;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Các lớp Canvas */
-        #bg-canvas, #burst-canvas, #mouse-trail-canvas {
-            position: absolute;
+        /* Canvas Pháo Hoa Nền */
+        #fireworks-canvas {
+            position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
+            z-index: 0;
         }
-        #bg-canvas { z-index: 2; opacity: 0.6; } /* Đom đóm nền */
-        #mouse-trail-canvas { z-index: 3; } /* Vệt chuột */
-        #burst-canvas { z-index: 4; mix-blend-mode: screen; } /* Vụ nổ phép thuật */
 
-        /* Container chứa ảnh bay */
-        #bubble-container {
+        /* =========================================
+           2. CẢNH 1: HỘP QUÀ 3D (GIFT BOX)
+           ========================================= */
+        #scene-gift {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 1s, transform 1s;
+        }
+
+        .gift-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            animation: floatBox 3s ease-in-out infinite;
+        }
+
+        .gift-container:hover {
+            animation: shakeBox 0.5s infinite;
+        }
+
+        .gift-box {
             position: absolute;
             width: 100%; height: 100%;
-            z-index: 5;
-            pointer-events: none;
+            transform-style: preserve-3d;
+            transform: rotateX(-20deg) rotateY(45deg);
+            transition: transform 1s;
         }
 
-        /* Style cho quả cầu ảnh */
-        .photo-bubble {
+        /* Các mặt của hộp */
+        .face {
             position: absolute;
-            bottom: -150px;
-            border-radius: 50%;
-            overflow: hidden;
-            box-shadow: 
-                0 0 10px var(--gold),
-                inset 0 0 20px var(--magic-purple);
-            border: 2px solid rgba(255, 215, 0, 0.5);
-            animation: bubbleRise linear forwards, gentleRotate 20s infinite linear;
-            will-change: transform;
-        }
-
-        .photo-bubble img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            opacity: 0.9;
-        }
-
-        /* Animation cho ảnh */
-        @keyframes bubbleRise {
-            to { transform: translateY(-130vh) translateX(var(--sway-end)); opacity: 0; }
-        }
-        @keyframes gentleRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Nội dung chữ chính */
-        .main-content {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            text-align: center;
-            color: var(--gold);
-            pointer-events: none;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-        }
-
-        h1.magic-title {
-            font-family: 'Cinzel Decorative', cursive;
-            font-size: 5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #fff, var(--gold), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: titleGlow 3s ease-in-out infinite alternate;
-        }
-
-        p.magic-wish {
-            font-size: 1.3rem;
-            line-height: 1.8;
-            max-width: 700px;
-            background: rgba(0,0,0,0.4);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            backdrop-filter: blur(5px);
-        }
-
-        @keyframes titleGlow {
-            from { filter: drop-shadow(0 0 5px var(--gold)); }
-            to { filter: drop-shadow(0 0 25px var(--magic-purple)); }
+            width: 150px; height: 150px;
+            background: var(--secondary);
+            border: 2px solid #a0112b;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
         
-        /* Hiệu ứng mặt nước ở đáy */
-        .water-surface {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 80px;
-            background: linear-gradient(to top, rgba(10, 46, 29, 0.8), transparent);
-            z-index: 6;
-            filter: blur(10px);
+        /* Dây ruy băng */
+        .face::before {
+            content: ''; position: absolute;
+            width: 30px; height: 100%;
+            left: 50%; transform: translateX(-50%);
+            background: var(--primary);
+            box-shadow: 0 0 5px var(--primary);
         }
+        .face::after {
+            content: ''; position: absolute;
+            width: 100%; height: 30px;
+            top: 50%; transform: translateY(-50%);
+            background: var(--primary);
+            box-shadow: 0 0 5px var(--primary);
+        }
+
+        .front  { transform: translateZ(75px); }
+        .back   { transform: rotateY(180deg) translateZ(75px); }
+        .right  { transform: rotateY(90deg) translateZ(75px); }
+        .left   { transform: rotateY(-90deg) translateZ(75px); }
+        .bottom { transform: rotateX(-90deg) translateZ(75px); }
+        
+        /* Nắp hộp */
+        .lid {
+            position: absolute;
+            width: 160px; height: 160px;
+            background: var(--secondary);
+            top: -5px; left: -5px;
+            transform: rotateX(90deg) translateZ(75px);
+            transform-style: preserve-3d;
+            transition: transform 1s ease-in-out;
+            transform-origin: top; /* Mở kiểu lật lên */
+            z-index: 100;
+            border: 2px solid var(--primary);
+        }
+        .lid-face {
+            width: 100%; height: 100%; background: var(--secondary);
+            display: flex; justify-content: center; align-items: center;
+        }
+        /* Nơ trên nắp */
+        .bow {
+            position: absolute;
+            top: -40px; left: 50%; transform: translateX(-50%);
+            width: 80px; height: 40px;
+        }
+        .bow span {
+            position: absolute; width: 40px; height: 40px;
+            border-radius: 50%; border: 5px solid var(--primary);
+            top: 0;
+        }
+        .bow span:nth-child(1) { left: 0; transform: skew(20deg); }
+        .bow span:nth-child(2) { right: 0; transform: skew(-20deg); }
+
+        /* Animation Hộp */
+        @keyframes floatBox {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes shakeBox {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .click-hint {
+            position: absolute;
+            bottom: -50px;
+            width: 200px;
+            text-align: center;
+            color: var(--primary);
+            font-size: 14px;
+            animation: blink 1s infinite;
+        }
+
+        /* =========================================
+           3. CẢNH 2: BỨC THƯ (LETTER)
+           ========================================= */
+        #scene-letter {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 90%; max-width: 600px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 2px solid var(--primary);
+            padding: 40px;
+            z-index: 20;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+            opacity: 0;
+            pointer-events: none; /* Khóa khi chưa hiện */
+        }
+        
+        .letter-content {
+            color: #eee;
+            font-size: 18px;
+            line-height: 1.6;
+            min-height: 200px;
+            font-family: 'Dancing Script', cursive; /* Font chữ viết tay */
+            font-size: 24px;
+        }
+
+        .letter-cursor {
+            display: inline-block;
+            width: 2px; height: 20px;
+            background: var(--primary);
+            animation: blink 1s infinite;
+        }
+
+        #start-btn-container {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .btn-start {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 15px 40px;
+            font-size: 20px;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-start:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        /* =========================================
+           4. CẢNH 3: GALLERY ẢNH (LẢO ĐẢO BAY LÊN)
+           ========================================= */
+        #scene-gallery {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5; /* Dưới hộp quà nhưng trên nền */
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .photo-card {
+            position: absolute;
+            bottom: -30vh; /* Bắt đầu tít dưới màn hình */
+            width: 150px; /* Kích thước ảnh */
+            padding: 5px;
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transform-origin: center;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        .photo-card img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Hiệu ứng bay lên lảo đảo */
+        /* Chúng ta sẽ tạo animation này bằng JS để random từng ảnh */
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .hidden { display: none !important; }
 
     </style>
 </head>
 <body>
 
-    <div class="forest-bg"></div>
-    <canvas id="bg-canvas"></canvas>
-    <canvas id="mouse-trail-canvas"></canvas>
-    <canvas id="burst-canvas"></canvas>
-    
-    <div id="bubble-container"></div>
-    <div class="water-surface"></div>
+    <canvas id="fireworks-canvas"></canvas>
 
-    <div class="main-content">
-        <h1 class="magic-title">Happy Birthday</h1>
-        <p class="magic-wish">Chào mừng đến với khu rừng nhiệm màu! Chúc bạn một tuổi mới tràn đầy phép màu, vẻ đẹp và những điều kỳ diệu. Mong mọi ước nguyện của bạn sẽ bay cao và tỏa sáng như những tinh linh đêm nay.</p>
+    <div id="scene-gift">
+        <div class="gift-container" onclick="openGift()">
+            <div class="gift-box">
+                <div class="face front"></div>
+                <div class="face back"></div>
+                <div class="face right"></div>
+                <div class="face left"></div>
+                <div class="face bottom"></div>
+                <div class="lid" id="gift-lid">
+                    <div class="lid-face">
+                        <div class="bow"><span></span><span></span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="click-hint">CLICK ĐỂ MỞ QUÀ</div>
+        </div>
     </div>
 
+    <div id="scene-letter">
+        <div class="letter-content">
+            <span id="typewriter-text"></span><span class="letter-cursor">|</span>
+        </div>
+        <div id="start-btn-container">
+            <button class="btn-start" onclick="startParty()">BẮT ĐẦU BỮA TIỆC</button>
+        </div>
+    </div>
+
+    <div id="scene-gallery"></div>
 
     <script>
-        // =================================================================
-        // KHU VỰC CẤU HÌNH CỦA BẠN (THAY ĐỔI Ở ĐÂY)
-        // =================================================================
+        // ===============================================
+        // CẤU HÌNH DỮ LIỆU CỦA BẠN (SỬA Ở ĐÂY)
+        // ===============================================
         const CONFIG = {
-            // Danh sách ảnh của bạn (Càng nhiều càng tốt)
+            // Lời chúc sinh nhật (dùng \n để xuống dòng)
+            message: "Chào bạn,\n\nHôm nay là một ngày vô cùng đặc biệt. Một ngày mà thế giới đón chào một người tuyệt vời như bạn.\n\nChúc bạn tuổi mới luôn rực rỡ như pháo hoa, mạnh mẽ và tự do bay cao như những cánh chim. \n\nHãy bấm nút bên dưới để xem điều kỳ diệu nhé! ❤️",
+            
+            // Danh sách ảnh (Thay link ảnh của bạn vào)
             photos: [
-                 "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400",
-                 "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400",
-                 "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400",
-                 "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400",
-                 // Thêm link ảnh của bạn vào đây
-            ],
-            // Màu sắc chủ đạo cho các vụ nổ phép thuật (Hue: 0-360)
-            magicColors: [50, 280, 200] // Vàng, Tím, Xanh ngọc
+                "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300",
+                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300",
+                "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300",
+                "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300",
+                "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300",
+                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300",
+                // ... Thêm bao nhiêu ảnh tùy thích
+            ]
         };
 
+        // ===============================================
+        // LOGIC 1: PHÁO HOA LIÊN TỤC (CANVAS)
+        // ===============================================
+        const canvas = document.getElementById('fireworks-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
 
-        // =================================================================
-        // PHẦN 1: HỆ THỐNG ẢNH QUẢ CẦU BAY (BUBBLE PHOTOS)
-        // =================================================================
-        const bubbleContainer = document.getElementById('bubble-container');
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
 
-        function createMagicBubble() {
-            if(document.hidden) return;
+        const particles = [];
+        const fireworks = [];
 
-            const bubble = document.createElement('div');
-            bubble.className = 'photo-bubble';
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                this.velocity = { x: (Math.random() - 0.5) * 8, y: (Math.random() - 0.5) * 8 };
+                this.alpha = 1;
+                this.friction = 0.96;
+            }
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                this.velocity.x *= this.friction;
+                this.velocity.y *= this.friction;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.01;
+            }
+        }
+
+        class Firework {
+            constructor(x, y, targetX, targetY) {
+                this.x = x; this.y = y;
+                this.targetX = targetX; this.targetY = targetY;
+                this.speed = 4;
+                this.angle = Math.atan2(targetY - y, targetX - x);
+                this.velocity = { x: Math.cos(this.angle) * this.speed, y: Math.sin(this.angle) * this.speed };
+                this.hue = Math.random() * 360;
+            }
+            draw() {
+                ctx.globalAlpha = 1;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = `hsl(${this.hue}, 100%, 50%)`;
+                ctx.fill();
+            }
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                const dist = Math.hypot(this.x - this.targetX, this.y - this.targetY);
+                if (dist < 10) {
+                    // Explode
+                    for (let i = 0; i < 50; i++) {
+                        particles.push(new Particle(this.x, this.y, `hsl(${this.hue}, 100%, 50%)`));
+                    }
+                    return true; // Dead
+                }
+                return false;
+            }
+        }
+
+        function animateFireworks() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Tự động bắn
+            if (Math.random() < 0.05) {
+                const startX = width / 2;
+                const startY = height;
+                const targetX = Math.random() * width;
+                const targetY = Math.random() * height * 0.6;
+                fireworks.push(new Firework(startX, startY, targetX, targetY));
+            }
+
+            fireworks.forEach((fw, index) => {
+                fw.draw();
+                if (fw.update()) fireworks.splice(index, 1);
+            });
+
+            particles.forEach((p, index) => {
+                p.draw();
+                p.update();
+                if (p.alpha <= 0) particles.splice(index, 1);
+            });
+            requestAnimationFrame(animateFireworks);
+        }
+        animateFireworks();
+
+        // ===============================================
+        // LOGIC 2: HỘP QUÀ & MỞ HỘP
+        // ===============================================
+        let isGiftOpened = false;
+        function openGift() {
+            if (isGiftOpened) return;
+            isGiftOpened = true;
+
+            // 1. Mở nắp hộp
+            const lid = document.getElementById('gift-lid');
+            lid.style.transform = "rotateX(200deg) translateZ(75px)"; // Lật hẳn ra sau
+
+            // 2. Ẩn gợi ý
+            document.querySelector('.click-hint').style.display = 'none';
+
+            // 3. Sau 1s, Phóng to hộp rồi biến mất, hiện thư
+            setTimeout(() => {
+                const giftScene = document.getElementById('scene-gift');
+                giftScene.style.opacity = '0';
+                giftScene.style.transform = 'scale(2)'; // Hiệu ứng zoom vào rồi biến mất
+                
+                setTimeout(() => {
+                    giftScene.style.display = 'none';
+                    showLetter();
+                }, 1000);
+            }, 800);
+            
+            // Bật nhạc nếu có
+            // document.getElementById('bg-music').play().catch(e => console.log("Cần tương tác để phát nhạc"));
+        }
+
+        // ===============================================
+        // LOGIC 3: VIẾT THƯ (TYPEWRITER)
+        // ===============================================
+        function showLetter() {
+            const letterScene = document.getElementById('scene-letter');
+            letterScene.style.pointerEvents = 'auto';
+            letterScene.style.opacity = '1';
+            letterScene.style.transform = 'translate(-50%, -50%) scale(1)';
+
+            let i = 0;
+            const textElement = document.getElementById('typewriter-text');
+            const speed = 50; // Tốc độ viết
+
+            function typeWriter() {
+                if (i < CONFIG.message.length) {
+                    const char = CONFIG.message.charAt(i);
+                    // Xử lý xuống dòng
+                    if (char === '\n') {
+                        textElement.innerHTML += '<br>';
+                    } else {
+                        textElement.innerHTML += char;
+                    }
+                    i++;
+                    setTimeout(typeWriter, speed);
+                } else {
+                    // Viết xong -> Hiện nút Start
+                    document.querySelector('.letter-cursor').style.display = 'none';
+                    document.getElementById('start-btn-container').style.opacity = '1';
+                }
+            }
+            // Chờ 1 chút rồi bắt đầu viết
+            setTimeout(typeWriter, 1000);
+        }
+
+        // ===============================================
+        // LOGIC 4: BỮA TIỆC ẢNH (LẢO ĐẢO BAY LÊN)
+        // ===============================================
+        function startParty() {
+            // 1. Ẩn bức thư đi
+            const letterScene = document.getElementById('scene-letter');
+            letterScene.style.opacity = '0';
+            letterScene.style.transform = 'translate(-50%, -50%) scale(2)'; // Zoom out biến mất
+            setTimeout(() => { letterScene.style.display = 'none'; }, 1000);
+
+            // 2. Bắt đầu thả ảnh
+            startFloatingPhotos();
+        }
+
+        function startFloatingPhotos() {
+            const container = document.getElementById('scene-gallery');
+            
+            // Cứ 0.8 giây tạo 1 ảnh mới
+            setInterval(() => {
+                createDriftingPhoto(container);
+            }, 800);
+        }
+
+        function createDriftingPhoto(container) {
+            // Tạo element
+            const div = document.createElement('div');
+            div.className = 'photo-card';
             
             const img = document.createElement('img');
             img.src = CONFIG.photos[Math.floor(Math.random() * CONFIG.photos.length)];
-            bubble.appendChild(img);
+            div.appendChild(img);
+            
+            // --- Cấu hình Random Vật lý ---
+            
+            // 1. Vị trí xuất phát (ngang)
+            const startLeft = Math.random() * 90 + 5; // 5% đến 95% màn hình
+            div.style.left = startLeft + '%';
 
-            // Random kích thước (80px - 160px)
-            const size = Math.random() * 80 + 80;
-            bubble.style.width = `${size}px`;
-            bubble.style.height = `${size}px`;
+            // 2. Kích thước (To nhỏ khác nhau)
+            const scale = Math.random() * 0.5 + 0.7; // 0.7 đến 1.2
+            div.style.transform = `scale(${scale})`; // Set scale ban đầu
 
-            // Random vị trí xuất phát ngang
-            bubble.style.left = `${Math.random() * 90 + 5}%`;
+            // 3. Thời gian bay (Chậm nhanh khác nhau)
+            const duration = Math.random() * 10 + 15; // 15s đến 25s (Rất chậm)
 
-            // Random độ lắc lư (sway) khi bay lên
-            const swayEnd = (Math.random() - 0.5) * 200; // Lệch trái phải tối đa 100px
-            bubble.style.setProperty('--sway-end', `${swayEnd}px`);
+            // 4. Tạo Keyframes động cho từng ảnh để nó "lảo đảo" khác nhau
+            // Chúng ta dùng Web Animations API để mượt mà hơn chèn style
+            
+            // Random hướng xoay (trái hay phải)
+            const rotateEnd = (Math.random() - 0.5) * 720; // Xoay từ -360 đến 360 độ
+            
+            // Random độ lắc lư (sway) - Lảo đảo
+            const swayAmount = (Math.random() - 0.5) * 200; // Lệch trái phải 100px
 
-            // Random thời gian bay (bay chậm: 15s - 25s)
-            const duration = Math.random() * 10 + 15;
-            bubble.style.animationDuration = `${duration}s, ${Math.random() * 10 + 10}s`; // Bay và xoay
-
-            bubbleContainer.appendChild(bubble);
-
-            setTimeout(() => bubble.remove(), duration * 1000);
-        }
-        // Tạo ảnh mới mỗi 1.2 giây
-        setInterval(createMagicBubble, 1200);
-
-
-        // =================================================================
-        // PHẦN 2: HỆ THỐNG CANVAS (Đom đóm, Vệt chuột, Nổ phép thuật)
-        // =================================================================
-        const bgCanvas = document.getElementById('bg-canvas');
-        const bgCtx = bgCanvas.getContext('2d');
-        const burstCanvas = document.getElementById('burst-canvas');
-        const burstCtx = burstCanvas.getContext('2d');
-        const trailCanvas = document.getElementById('mouse-trail-canvas');
-        const trailCtx = trailCanvas.getContext('2d');
-
-        let width, height;
-        function resizeCanvases() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            bgCanvas.width = burstCanvas.width = trailCanvas.width = width;
-            bgCanvas.height = burstCanvas.height = trailCanvas.height = height;
-        }
-        window.addEventListener('resize', resizeCanvases);
-        resizeCanvases();
-
-        // --- Class Hạt cơ bản (Dùng chung) ---
-        class Particle {
-            constructor(x, y, hue, speedMult = 1, sizeMult = 1) {
-                this.x = x; this.y = y;
-                this.hue = hue;
-                this.angle = Math.random() * Math.PI * 2;
-                this.speed = Math.random() * speedMult;
-                this.vx = Math.cos(this.angle) * this.speed;
-                this.vy = Math.sin(this.angle) * this.speed;
-                this.size = Math.random() * sizeMult + 1;
-                this.alpha = 1;
-                this.decay = Math.random() * 0.02 + 0.01;
-                this.gravity = 0.02;
-            }
-            update() {
-                this.x += this.vx; this.y += this.vy + this.gravity;
-                this.vx *= 0.96; this.vy *= 0.96; // Ma sát
-                this.alpha -= this.decay;
-            }
-            draw(ctx) {
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${this.alpha})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1;
-            }
-        }
-
-        let bursts = []; // Mảng chứa các hạt nổ
-        let fireflies = []; // Mảng đom đóm
-        let trailParticles = []; // Mảng vệt chuột
-
-        // --- Tạo vụ nổ phép thuật ---
-        function createMagicalBurst(x, y) {
-            const hue = CONFIG.magicColors[Math.floor(Math.random() * CONFIG.magicColors.length)];
-            for(let i = 0; i < 50; i++) {
-                // Tốc độ nhanh hơn, kích thước lớn hơn cho vụ nổ
-                bursts.push(new Particle(x, y, hue + Math.random()*40 - 20, 6, 3));
-            }
-        }
-        
-        // Tự động tạo vụ nổ ngẫu nhiên
-        setInterval(() => {
-            createMagicalBurst(Math.random() * width, Math.random() * height * 0.7);
-        }, 1500);
-
-        burstCanvas.addEventListener('click', (e) => createMagicalBurst(e.clientX, e.clientY));
-
-
-        // --- Tạo đom đóm nền ---
-        for(let i = 0; i < 100; i++) {
-            fireflies.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                size: Math.random() * 2,
-                speedY: Math.random() * 0.5 - 0.25, // Bay lên xuống chậm
-                speedX: Math.random() * 0.4 - 0.2,
-                alpha: Math.random(),
-                alphaChange: Math.random() * 0.02 - 0.01
-            });
-        }
-
-        // --- Xử lý vệt chuột ---
-        let mouseX = 0, mouseY = 0;
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX; mouseY = e.clientY;
-            // Tạo hạt khi di chuột
-            for(let i=0; i<2; i++) {
-                 trailParticles.push(new Particle(mouseX, mouseY, 50, 2, 1.5)); // Màu vàng
-            }
-        });
-
-
-        // =================================================================
-        // VÒNG LẶP HOẠT HÌNH CHÍNH (RENDER LOOP)
-        // =================================================================
-        function animate() {
-            // 1. Render Đom đóm (Background)
-            bgCtx.clearRect(0, 0, width, height);
-            bgCtx.fillStyle = '#ffd700'; // Màu vàng đom đóm
-            fireflies.forEach(f => {
-                f.y -= f.speedY; f.x += f.speedX;
-                f.alpha += f.alphaChange;
-                if(f.alpha <= 0 || f.alpha >= 1) f.alphaChange *= -1; // Nhấp nháy
-                if(f.y < 0) f.y = height; if(f.y > height) f.y = 0; // Lặp lại vị trí
-                bgCtx.globalAlpha = f.alpha;
-                bgCtx.beginPath(); bgCtx.arc(f.x, f.y, f.size, 0, Math.PI*2); bgCtx.fill();
-            });
-            bgCtx.globalAlpha = 1;
-
-            // 2. Render Vụ nổ phép thuật
-            burstCtx.globalCompositeOperation = 'destination-out';
-            burstCtx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Tạo vệt mờ nhẹ
-            burstCtx.fillRect(0, 0, width, height);
-            burstCtx.globalCompositeOperation = 'lighter';
-            bursts.forEach((p, i) => {
-                p.update(); p.draw(burstCtx);
-                if(p.alpha <= 0) bursts.splice(i, 1);
+            // Animation Bay lên + Lắc lư + Xoay
+            div.animate([
+                { 
+                    transform: `translateY(0) translateX(0) rotate(0deg) scale(${scale})`, 
+                    opacity: 0,
+                    bottom: '-30vh' 
+                },
+                { 
+                    opacity: 1, 
+                    offset: 0.1 
+                },
+                {
+                    transform: `translateY(-60vh) translateX(${swayAmount}px) rotate(${rotateEnd / 2}deg) scale(${scale})`,
+                    offset: 0.5 
+                },
+                { 
+                    transform: `translateY(-130vh) translateX(0) rotate(${rotateEnd}deg) scale(${scale})`, 
+                    opacity: 0,
+                    bottom: '100vh' 
+                }
+            ], {
+                duration: duration * 1000,
+                easing: 'linear',
+                fill: 'forwards'
             });
 
-             // 3. Render Vệt chuột
-            trailCtx.clearRect(0, 0, width, height);
-            trailCtx.globalCompositeOperation = 'lighter';
-             trailParticles.forEach((p, i) => {
-                p.update(); p.draw(trailCtx);
-                p.size *= 0.95; // Thu nhỏ dần
-                if(p.alpha <= 0) trailParticles.splice(i, 1);
-            });
+            container.appendChild(div);
 
-            requestAnimationFrame(animate);
+            // Xóa ảnh sau khi bay xong để nhẹ máy
+            setTimeout(() => {
+                div.remove();
+            }, duration * 1000);
         }
-        animate();
 
     </script>
 </body>
