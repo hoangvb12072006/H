@@ -3,255 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOANGKUN RETRO GAME</title>
+    <title>FLAPPY HOANGKUN</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-color: #00f2ff;
+            --neon-pink: #ff007b;
+            --neon-blue: #00f2ff;
             --bg-dark: #050505;
-            --panel-bg: rgba(20, 20, 20, 0.9);
         }
 
         body {
             background-color: var(--bg-dark);
             color: white;
             font-family: 'Orbitron', sans-serif;
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .header {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            text-shadow: 0 0 10px var(--neon-color), 0 0 20px var(--neon-color);
-            margin: 0;
-            letter-spacing: 5px;
-        }
-
-        .user-tag {
-            color: #ff007b;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-
-        #game-board {
-            position: relative;
-            border: 5px solid #1a1a1a;
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
-            background: #000;
-        }
+        .header { margin-bottom: 10px; text-align: center; }
+        h1 { font-size: 2rem; text-shadow: 0 0 10px var(--neon-pink); margin: 0; }
+        .author { color: var(--neon-blue); font-size: 0.8rem; letter-spacing: 2px; }
 
         canvas {
-            display: block;
-        }
-
-        .ui-panel {
-            display: flex;
-            gap: 30px;
-            margin-top: 20px;
-            background: var(--panel-bg);
-            padding: 15px 40px;
-            border-radius: 50px;
-            border: 1px solid var(--neon-color);
-            box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.2);
-        }
-
-        .stat-box { text-align: center; }
-        .stat-label { font-size: 0.7rem; color: #888; display: block; }
-        .stat-value { font-size: 1.5rem; color: var(--neon-color); font-weight: bold; }
-
-        #overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        button {
-            background: transparent;
-            border: 2px solid var(--neon-color);
-            color: var(--neon-color);
-            padding: 15px 40px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
+            border: 3px solid #1a1a1a;
+            box-shadow: 0 0 30px rgba(255, 0, 123, 0.2);
+            background: linear-gradient(to bottom, #000 0%, #050515 100%);
             cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
         }
 
-        button:hover {
-            background: var(--neon-color);
-            color: black;
-            box-shadow: 0 0 20px var(--neon-color);
+        #score-board {
+            margin-top: 15px;
+            font-size: 1.5rem;
+            color: var(--neon-blue);
         }
 
-        .shake { animation: shake 0.5s; }
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            50% { transform: translate(-1px, 2px) rotate(1deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        .instructions {
+            margin-top: 10px;
+            font-size: 0.7rem;
+            color: #555;
         }
     </style>
 </head>
-<body id="body">
+<body>
 
     <div class="header">
-        <h1>HOANGKUN</h1>
-        <div class="user-tag">CHỦ SỞ HỮU: NGUYỄN VIỆT HOÀNG</div>
+        <h1>FLAPPY HOANGKUN</h1>
+        <div class="author">BY NGUYỄN VIỆT HOÀNG</div>
     </div>
 
-    <div id="game-board">
-        <canvas id="snakeGame" width="500" height="500"></canvas>
-        <div id="overlay">
-            <button onclick="startGame()">BẮT ĐẦU CHƠI</button>
-            <p style="margin-top: 15px; font-size: 0.8rem;">Dùng phím mũi tên để lái</p>
-        </div>
-    </div>
-
-    <div class="ui-panel">
-        <div class="stat-box">
-            <span class="stat-label">ĐIỂM SỐ</span>
-            <span id="score" class="stat-value">000</span>
-        </div>
-        <div class="stat-box">
-            <span class="stat-label">LEVEL</span>
-            <span id="level" class="stat-value">01</span>
-        </div>
-    </div>
+    <canvas id="flappyGame" width="400" height="550"></canvas>
+    
+    <div id="score-board">SCORE: <span id="currentScore">0</span></div>
+    <div class="instructions">CLICK HOẶC NHẤN SPACE ĐỂ NHẢY</div>
 
     <script>
-        const canvas = document.getElementById("snakeGame");
+        const canvas = document.getElementById("flappyGame");
         const ctx = canvas.getContext("2d");
-        const scoreDisplay = document.getElementById("score");
-        const levelDisplay = document.getElementById("level");
-        const overlay = document.getElementById("overlay");
-        const body = document.getElementById("body");
+        const scoreElement = document.getElementById("currentScore");
 
-        const box = 25;
-        let snake, food, d, score, level, gameSpeed, gameLoop;
+        // Game Constants
+        const GRAVITY = 0.25;
+        const JUMP = -4.5;
+        const PIPE_SPEED = 2;
+        const PIPE_GAP = 150;
 
-        function init() {
-            snake = [{x: 10 * box, y: 10 * box}];
-            food = spawnFood();
-            d = null;
+        let bird = { x: 50, y: 200, w: 30, h: 20, velocity: 0 };
+        let pipes = [];
+        let frames = 0;
+        let score = 0;
+        let gameActive = false;
+
+        function resetGame() {
+            bird.y = 200;
+            bird.velocity = 0;
+            pipes = [];
             score = 0;
-            level = 1;
-            gameSpeed = 120;
-            scoreDisplay.innerText = "000";
-            levelDisplay.innerText = "01";
+            frames = 0;
+            gameActive = true;
+            scoreElement.innerText = "0";
         }
 
-        function spawnFood() {
-            return {
-                x: Math.floor(Math.random() * 20) * box,
-                y: Math.floor(Math.random() * 20) * box
-            };
-        }
-
-        document.addEventListener("keydown", e => {
-            if(e.keyCode == 37 && d != "RIGHT") d = "LEFT";
-            else if(e.keyCode == 38 && d != "DOWN") d = "UP";
-            else if(e.keyCode == 39 && d != "LEFT") d = "RIGHT";
-            else if(e.keyCode == 40 && d != "UP") d = "DOWN";
-        });
-
-        function draw() {
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Vẽ thức ăn (hiệu ứng tỏa sáng)
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = "#ff007b";
-            ctx.fillStyle = "#ff007b";
-            ctx.beginPath();
-            ctx.arc(food.x + box/2, food.y + box/2, box/2.5, 0, Math.PI*2);
-            ctx.fill();
+        function drawBird() {
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = varStyle('--neon-blue');
+            ctx.fillStyle = varStyle('--neon-blue');
+            ctx.fillRect(bird.x, bird.y, bird.w, bird.h);
             ctx.shadowBlur = 0;
+        }
 
-            // Vẽ rắn
-            for(let i = 0; i < snake.length; i++) {
-                ctx.fillStyle = (i == 0) ? "#00f2ff" : "#005a5f";
-                ctx.strokeStyle = "black";
-                ctx.lineWidth = 2;
-                ctx.fillRect(snake[i].x, snake[i].y, box, box);
-                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
-            }
+        function createPipe() {
+            let minHeight = 50;
+            let maxHeight = canvas.height - PIPE_GAP - 50;
+            let height = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+            pipes.push({ x: canvas.width, top: height, passed: false });
+        }
 
-            let headX = snake[0].x;
-            let headY = snake[0].y;
+        function drawPipes() {
+            pipes.forEach((p, index) => {
+                p.x -= PIPE_SPEED;
 
-            if(d == "LEFT") headX -= box;
-            if(d == "UP") headY -= box;
-            if(d == "RIGHT") headX += box;
-            if(d == "DOWN") headY += box;
+                ctx.fillStyle = varStyle('--neon-pink');
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = varStyle('--neon-pink');
+                
+                // Top pipe
+                ctx.fillRect(p.x, 0, 50, p.top);
+                // Bottom pipe
+                ctx.fillRect(p.x, p.top + PIPE_GAP, 50, canvas.height);
+                
+                ctx.shadowBlur = 0;
 
-            // Ăn mồi
-            if(headX == food.x && headY == food.y) {
-                score += 10;
-                scoreDisplay.innerText = score.toString().padStart(3, '0');
-                food = spawnFood();
-                if(score % 50 == 0) {
-                    level++;
-                    levelDisplay.innerText = level.toString().padStart(2, '0');
-                    increaseSpeed();
+                // Score count
+                if (!p.passed && p.x + 50 < bird.x) {
+                    score++;
+                    scoreElement.innerText = score;
+                    p.passed = true;
                 }
-            } else if(d) {
-                snake.pop();
-            }
 
-            let newHead = {x: headX, y: headY};
+                // Remove off-screen pipes
+                if (p.x + 50 < 0) pipes.splice(index, 1);
 
-            // Va chạm
-            if(headX < 0 || headX >= canvas.width || headY < 0 || headY >= canvas.height || collision(newHead, snake)) {
-                gameOver();
+                // Collision Detection
+                if (bird.x < p.x + 50 && bird.x + bird.w > p.x &&
+                    (bird.y < p.top || bird.y + bird.h > p.top + PIPE_GAP)) {
+                    gameActive = false;
+                }
+            });
+        }
+
+        function varStyle(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+
+        function update() {
+            if (!gameActive) {
+                ctx.fillStyle = "rgba(0,0,0,0.5)";
+                ctx.fillRect(0,0, canvas.width, canvas.height);
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = "20px Orbitron";
+                ctx.fillText("CLICK ĐỂ BẮT ĐẦU", canvas.width/2, canvas.height/2);
                 return;
             }
 
-            if(d) snake.unshift(newHead);
+            bird.velocity += GRAVITY;
+            bird.y += bird.velocity;
+
+            if (bird.y + bird.h > canvas.height || bird.y < 0) gameActive = false;
+
+            if (frames % 90 === 0) createPipe();
+            frames++;
         }
 
-        function collision(head, array) {
-            for(let i = 0; i < array.length; i++) {
-                if(head.x == array[i].x && head.y == array[i].y) return true;
-            }
-            return false;
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            update();
+            drawPipes();
+            drawBird();
+            requestAnimationFrame(loop);
         }
 
-        function increaseSpeed() {
-            clearInterval(gameLoop);
-            gameSpeed = Math.max(50, gameSpeed - 15);
-            gameLoop = setInterval(draw, gameSpeed);
-        }
+        window.addEventListener("keydown", (e) => { if(e.code === "Space") bird.velocity = JUMP; });
+        canvas.addEventListener("mousedown", () => {
+            if(!gameActive) resetGame();
+            else bird.velocity = JUMP;
+        });
 
-        function gameOver() {
-            clearInterval(gameLoop);
-            body.classList.add("shake");
-            setTimeout(() => body.classList.remove("shake"), 500);
-            overlay.style.display = "flex";
-            overlay.innerHTML = `<h2 style='color:red'>THẤT BẠI!</h2><p>ĐIỂM CỦA BẠN: ${score}</p><button onclick="startGame()">THỬ LẠI</button>`;
-        }
-
-        function startGame() {
-            init();
-            overlay.style.display = "none";
-            clearInterval(gameLoop);
-            gameLoop = setInterval(draw, gameSpeed);
-        }
+        loop();
     </script>
 </body>
 </html>
