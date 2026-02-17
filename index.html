@@ -100,28 +100,45 @@
             background: var(--bg-color);
         }
 
-        /* Hero Section có ảnh nền */
+       /* Hero Section có hiệu ứng Zoom nền */
         .hero {
             margin-top: 60px;
             text-align: center;
             padding: 120px 20px;
-            /* Thay link ảnh nền dưới đây bằng ảnh bạn thích */
-            background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('https://lienquan.garena.vn/wp-content/uploads/2021/11/5f38515f4833215903b7b252033c415c61a5d625b15b5.jpg') center/cover no-repeat;
+            position: relative;
+            overflow: hidden; /* Cắt phần ảnh thừa khi zoom */
             color: white;
+            z-index: 1; /* Để nội dung chữ nổi lên trên */
+        }
+
+        /* Tạo lớp nền giả để làm hiệu ứng zoom mà không ảnh hưởng chữ */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* Ảnh nền cũ của bạn */
+            background: linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.8)), url('https://lienquan.garena.vn/wp-content/uploads/2021/11/5f38515f4833215903b7b252033c415c61a5d625b15b5.jpg') center/cover no-repeat;
+            z-index: -1; /* Nằm dưới chữ */
+            transition: transform 5s ease; /* Zoom chậm trong 5 giây */
+        }
+
+        /* Khi di chuột vào hero thì lớp nền zoom lên */
+        .hero:hover::before {
+            transform: scale(1.1); /* Phóng to 10% */
         }
 
         .hero h1 {
             font-size: 2.8rem;
             margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.7); /* Đổ bóng chữ đậm hơn chút */
         }
         
         .hero p {
             font-size: 1.1rem;
             margin-bottom: 25px;
-            color: #cbd5e1;
+            color: #e2e8f0;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.5);
         }
-
         /* Product Grid */
         .container {
             max-width: 1200px;
@@ -175,13 +192,55 @@
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
 
+       /* Card Image với hiệu ứng Zoom và Lướt sáng */
         .card-img {
             width: 100%;
             height: 200px;
             background-color: #1e293b;
             background-position: center;
-            background-size: cover;
+            background-size: 100%; /* Kích thước ban đầu */
             position: relative;
+            overflow: hidden; /* Quan trọng: để cắt vệt sáng lướt qua */
+            transition: background-size 0.5s ease; /* Hiệu ứng zoom ảnh mượt mà */
+        }
+
+        /* Hiệu ứng 1: Zoom ảnh nền khi di chuột vào thẻ card toàn cục */
+        .card:hover .card-img {
+            background-size: 115%; /* Phóng to ảnh lên 15% */
+        }
+
+        /* Hiệu ứng 2: Vệt sáng lướt qua (Shine effect) */
+        .card-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%; /* Bắt đầu từ bên ngoài bên trái */
+            width: 100%;
+            height: 100%;
+            /* Tạo vệt sáng chéo */
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg); /* Nghiêng vệt sáng */
+            transition: all 0.7s ease; /* Tốc độ lướt */
+        }
+
+        /* Kích hoạt vệt sáng khi di chuột vào thẻ */
+        .card:hover .card-img::after {
+            left: 150%; /* Lướt sang bên phải ra ngoài */
+        }
+
+        .ms-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.8);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: white;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            z-index: 2; /* Đảm bảo badge luôn nằm trên vệt sáng */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         .ms-badge {
