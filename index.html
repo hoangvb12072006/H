@@ -534,16 +534,17 @@
             }
         }
 
-        function buyAcc(id) {
+       function buyAcc(id, price) {
             const session = localStorage.getItem('hoangkun_current_session');
             if(!session) {
                 alert('Bạn cần đăng nhập để mua tài khoản này!');
                 openModal('login');
             } else {
-                alert('Mã số acc: ' + id + '\\nBạn sẽ được chuyển hướng tới trang thanh toán...');
-                // Bạn có thể thêm window.location.href = 'link-thanh-toan' vào đây
+                // Chuyển hướng sang trang thanh toán và truyền ID + Giá tiền lên URL
+                window.location.href = `thanhtoan.html?id=${id}&price=${price}`;
             }
         }
+        
     </script>
 </body>
 </html>
