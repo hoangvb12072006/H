@@ -565,11 +565,17 @@
 
             if (session) {
                 const user = JSON.parse(session);
+                // THÊM LINK a href="profile.html" VÀO CHỖ XIN CHÀO
                 authButtons.innerHTML = `
-                    <span style="color: var(--text-main); font-weight: 600; margin-right: 15px;">Xin chào, <span style="color: var(--secondary-color)">${user.fullname}</span></span>
+                    <a href="profile.html" style="text-decoration: none; color: var(--text-main); font-weight: 600; margin-right: 15px;">Xin chào, <span style="color: var(--secondary-color)">${user.fullname}</span></a>
                     <button class="btn btn-outline-blue" onclick="logout()">Đăng xuất</button>
                 `;
+                
+                // Khung thông tin cá nhân dưới banner (nếu bạn muốn người dùng click vào khung đó cũng sang profile)
                 profileSection.style.display = 'block';
+                profileSection.style.cursor = 'pointer'; // Thêm hiệu ứng con trỏ chuột
+                profileSection.onclick = function() { window.location.href = 'profile.html'; }; // Click vào khung sẽ sang trang profile
+
                 document.getElementById('user-fullname').innerText = user.fullname;
                 document.getElementById('user-username').innerText = user.username;
             } else {
