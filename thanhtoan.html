@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - HOANGKUN STORE</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0ea5e9;
+            --secondary-color: #3b82f6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .checkout-container {
+            background: var(--card-bg);
+            max-width: 800px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+            border: 1px solid #e2e8f0;
+        }
+
+        .order-details {
+            flex: 1;
+            padding: 40px;
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            min-width: 300px;
+        }
+
+        .order-details h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        .info-row span:last-child {
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .total-price {
+            font-size: 1.8rem;
+            color: #ea580c;
+            font-weight: 800;
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .payment-method {
+            flex: 1;
+            padding: 40px;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .payment-method h2 {
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+
+        .qr-box {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .qr-box img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .bank-info {
+            text-align: left;
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .bank-info p {
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .bank-info strong {
+            color: var(--secondary-color);
+        }
+
+        .btn-back {
+            display: inline-block;
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-back:hover {
+            background: var(--text-muted);
+            color: white;
+        }
+
+        .contact-support {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .contact-support a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <div class="order-details">
+            <h2><i class="fas fa-shopping-cart"></i> Chi Tiết Đơn Hàng</h2>
+            
+            <div class="info-row">
+                <span>Mã tài khoản:</span>
+                <span id="acc-id">Đang tải...</span>
+            </div>
+            <div class="info-row">
+                <span>Tài khoản mua hàng:</span>
+                <span id="buyer-name">Đang tải...</span>
+            </div>
+            <div class="info-row">
+                <span>Trạng thái:</span>
+                <span style="color: #22c55e;">Chờ thanh toán</span>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <span>Tổng thanh toán:</span>
+                <div class="total-price" id="acc-price">0đ</div>
+            </div>
+
+            <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Quay lại Shop</a>
+        </div>
+
+        <div class="payment-method">
+            <h2>Quét Mã QR Để Thanh Toán</h2>
+            
+            <div class="qr-box">
+                <img id="qr-img" src="https://img.vietqr.io/image/techcombank-3120720060-compact2.png?amount=0&addInfo=Thanh toan acc" alt="QR Code Thanh Toán">
+            </div>
+
+            <div class="bank-info">
+                <p>Ngân hàng: <strong>Techcombank</strong></p>
+                <p>Số tài khoản: <strong>3120720060</strong></p>
+                <p>Chủ tài khoản: <strong>NGUYEN VIET HOANG</strong></p>
+                <p style="color: #ea580c; margin-top: 10px; font-weight: bold;">Nội dung CK: <span id="transfer-content">MuaAcc</span></p>
+            </div>
+
+            <div class="contact-support">
+                Sau khi chuyển khoản, vui lòng liên hệ <br>
+                Zalo: <a href="https://zalo.me/84788265513" target="_blank">0788265513</a> để nhận tài khoản.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lấy thông tin người dùng đang đăng nhập
+        const session = localStorage.getItem('hoangkun_current_session');
+        if (!session) {
+            alert('Vui lòng đăng nhập trước khi thanh toán!');
+            window.location.href = 'index.html';
+        } else {
+            const user = JSON.parse(session);
+            document.getElementById('buyer-name').innerText = user.username;
+        }
+
+        // Lấy ID Acc và Giá từ URL (Ví dụ: thanhtoan.html?id=8472&price=450000)
+        const urlParams = new URLSearchParams(window.location.search);
+        const accId = urlParams.get('id') || 'Không xác định';
+        const price = urlParams.get('price') || '0';
+
+        // Hiển thị thông tin lên giao diện
+        document.getElementById('acc-id').innerText = '#' + accId;
+        document.getElementById('acc-price').innerText = new Intl.NumberFormat('vi-VN').format(price) + 'đ';
+        
+        const transferContent = 'HOANGKUN ' + accId + ' ' + JSON.parse(session).username;
+        document.getElementById('transfer-content').innerText = transferContent;
+
+        // Cập nhật lại ảnh QR tự động điền số tiền và nội dung
+        const qrUrl = `https://img.vietqr.io/image/techcombank-3120720060-compact2.png?amount=${price}&addInfo=${encodeURIComponent(transferContent)}&accountName=NGUYEN VIET HOANG`;
+        document.getElementById('qr-img').src = qrUrl;
+
+    </script>
+</body>
+</html>
