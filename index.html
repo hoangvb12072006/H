@@ -11,20 +11,35 @@
             font-family: Arial, sans-serif;
         }
 
-        /* Nền tối cho body để dễ nhìn card hơn (không bắt buộc) */
+        /* Nền tối cho body để dễ nhìn card hơn */
         body {
             background-color: #1a202c; 
             padding: 50px;
+            /* Căn giữa card giữa màn hình cho đẹp mắt hơn */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
 
-        /* 2. Style cho thẻ .card (áp dụng width, border, margin) */
+        /* 2. Style cho thẻ .card */
         .card {
             width: 280px;
             border: 2px solid #4a5568;
-            margin: 0 auto;
             border-radius: 12px;
-            overflow: hidden; /* Để góc bo tròn cắt bớt nền của phần header */
-            background-color: #2d3748; /* Màu nền tối của card */
+            overflow: hidden; 
+            background-color: #2d3748; 
+            
+            /* THÊM CHUYỂN ĐỘNG MƯỢT CHO CARD */
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* HIỆU ỨNG: Khi di chuột vào Card */
+        .card:hover {
+            transform: translateY(-10px); /* Nhấc card nổi lên 10px */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); /* Đổ bóng đen to tỏa ra ngoài */
+            border-color: #667eea; /* Đổi màu viền tiệp với màu header */
         }
 
         /* Phần màu xanh tím phía trên chứa Avatar */
@@ -36,7 +51,7 @@
             align-items: center;
         }
 
-        /* Vẽ biểu tượng Avatar đơn giản bằng CSS */
+        /* Vẽ biểu tượng Avatar */
         .avatar {
             width: 60px;
             height: 60px;
@@ -47,14 +62,24 @@
             display: flex;
             justify-content: center;
             align-items: center;
+
+            /* THÊM CHUYỂN ĐỘNG MƯỢT CHO AVATAR */
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
         }
+
+        /* HIỆU ỨNG: Khi di chuột vào Card thì Avatar cũng thay đổi */
+        .card:hover .avatar {
+            transform: scale(1.15) rotate(5deg); /* Phóng to nhẹ và xoay 5 độ */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* Phát sáng chói quanh avatar */
+        }
+
         .avatar::before {
             content: '';
             position: absolute;
             top: 10px;
             width: 18px;
             height: 18px;
-            background-color: rgba(255,255,255,0.7);
+            background-color: rgba(255,255,255,0.8);
             border-radius: 50%;
         }
         .avatar::after {
@@ -63,11 +88,11 @@
             bottom: 0;
             width: 36px;
             height: 18px;
-            background-color: rgba(255,255,255,0.7);
+            background-color: rgba(255,255,255,0.8);
             border-radius: 18px 18px 0 0;
         }
 
-        /* 3. Style cho .card-body (áp dụng padding) */
+        /* 3. Style cho .card-body */
         .card-body {
             padding: 20px 20px 24px;
             color: #ffffff;
@@ -98,6 +123,20 @@
             font-weight: bold;
             cursor: pointer;
             text-align: center;
+
+            /* THÊM CHUYỂN ĐỘNG MƯỢT CHO NÚT */
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+        }
+
+        /* HIỆU ỨNG: Khi di chuột vào nút */
+        .btn:hover {
+            background-color: #0284c7; /* Chuyển sang màu xanh đậm hơn */
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4); /* Phát sáng nhẹ dưới nút */
+        }
+
+        /* HIỆU ỨNG: Khi bấm chuột vào nút */
+        .btn:active {
+            transform: scale(0.95); /* Cảm giác nút bị lún xuống 1 chút xíu */
         }
     </style>
 </head>
@@ -110,7 +149,7 @@
         <div class="card-body">
             <h3 class="card-title">Sản Phẩm ABC</h3>
             <p class="card-desc">Mô tả ngắn về sản phẩm. Cung cấp thông tin hữu ích giúp người dùng hiểu sản phẩm.</p>
-           <button class="btn" onclick="alert('Chào Hoàng Kun! Phần chi tiết sản phẩm đang được xây dựng nhé.')">Xem thêm</button>
+            <button class="btn" onclick="alert('Chào Hoàng Kun! Phần chi tiết sản phẩm đang được xây dựng nhé.')">Xem thêm</button>
         </div>
     </div>
 
