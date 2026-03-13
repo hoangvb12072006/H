@@ -1,10 +1,12 @@
-.box {
-
-width: 300px;
-height: 200px;
-
-panding: 20px;
-
-border: 2px solid #333
-
-margin: 20px auto;
+/*===== Reset cơ bản ===== */
+*, *::before, *::after {
+box-sizing: border-box;
+body 1 font-family: Arial, sans-serif; padding: 30px; background: #f5f5f5;
+.hop-demo {
+/* 1. Kích thước nội dung */ width: 300px;
+height: 120px;
+/* 2. Padding - khoảng đệm bên trong */ padding: 20px;
+/* 3. Border - đường viền */ border: 3px solid #1A237E;
+border-radius: 8px;
+/* 4. Margin - khoảng cách bên ngoài */ margin: 30px auto;
+background-color: #E3F2FD; color: #1A237E;
